@@ -44,9 +44,5 @@ module Zim
       puts "Unknown command specified: #{key}" unless COMMANDS[key.to_s]
       COMMANDS[key.to_s].call(app)
     end
-
-    def context(&block)
-      self.instance_eval &block
-    end
   end
 end
