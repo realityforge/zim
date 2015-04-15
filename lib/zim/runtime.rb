@@ -2,11 +2,14 @@ module Zim
   COMMANDS = {}
 
   class << self
+
+    # Run system command and raise an exception if it returns a non-zero exit status
     def mysystem(command)
       puts "system (#{Dir.pwd}): #{command}" if @verbose
       system(command) || (raise "Error executing #{command} in #{Dir.pwd}")
     end
 
+    # Evaluate block after changing directory to specified directory
     def in_dir(dir, &block)
       begin
         Dir.chdir(dir)
@@ -16,10 +19,12 @@ module Zim
       end
     end
 
+    # change to the base directory before evaluating block
     def in_base_dir(&block)
       in_dir(@base_dir, &block)
     end
 
+    # change to the specified applications directory before evaluating block
     def in_app_dir(app, &block)
       in_dir("#{@base_dir}/#{File.basename(app)}", &block)
     end
