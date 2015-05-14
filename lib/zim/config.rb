@@ -44,7 +44,6 @@ module Zim # nodoc
       def quiet?
         self.log_level == :verbose
       end
-
     end
   end
 end
