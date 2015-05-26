@@ -38,6 +38,16 @@ module Zim # nodoc
     end
   end
 
+  # Base class used for named elements configurable via options
+  class BaseElement < ConfigElement
+    attr_reader :key
+
+    def initialize(key, options, &block)
+      @key = key
+      super(options)
+    end
+  end
+
   class << self
     def context(&block)
       self.instance_eval &block
