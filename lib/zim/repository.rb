@@ -14,6 +14,24 @@
 
 module Zim # nodoc
   class Repository
+
+    def current_source_tree_key=(source_tree_key)
+      @current_source_tree = source_tree_key.nil? ? nil : source_tree_by_name(source_tree_key)
+    end
+
+    def current_source_tree?
+      !!@current_source_tree
+    end
+
+    def current_source_tree_key
+      current_source_tree.key
+    end
+
+    def current_source_tree
+      raise 'No current source tree' unless @current_source_tree
+      @current_source_tree
+    end
+
     def source_tree(key, config = {})
       SourceTreeDefinition.new(self, key, config)
     end

@@ -16,12 +16,19 @@ module Zim # nodoc
 
   class ApplicationDefinition < BaseElement
     attr_reader :source_tree
-    attr_accessor :git_url
 
     def initialize(source_tree, key, options, &block)
       source_tree.send(:register_application, key, self)
       @source_tree = source_tree
       super(key, options, &block)
+    end
+
+    attr_writer :git_url
+
+    def git_url
+      git_url = @git_url || self.key.to_s
+      git_url = "#{source_tree.base_git_url}/#{git_url}.git" unless git_url.include?(':')
+      git_url
     end
   end
 end
