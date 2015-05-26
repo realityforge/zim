@@ -39,6 +39,12 @@ module Zim # nodoc
       super(key, options, &block)
     end
 
+    def directory
+      @directory || key
+    end
+
+    attr_writer :directory
+
     def application(key, config = {})
       ApplicationDefinition.new(self, key, config)
     end
