@@ -21,6 +21,7 @@ module Zim # nodoc
     def initialize(repository, key, options, &block)
       @repository = repository
       @applications = {}
+      repository.send(:register_source_tree, key, self)
 
       options = options.dup
       applications = options.delete(:applications) || {}

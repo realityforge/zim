@@ -38,8 +38,7 @@ module Zim # nodoc
       @source_trees ||= {}
     end
 
-    def register_source_tree(source_tree)
-      key = source_tree.key.to_s
+    def register_source_tree(key, source_tree)
       raise "Attempting to register duplicate source tree with key '#{key}'" if source_tree_exists?(key)
       source_tree_map[key] = source_tree
     end
