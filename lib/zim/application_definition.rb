@@ -12,12 +12,16 @@
 # limitations under the License.
 #
 
-require 'fileutils'
+module Zim # nodoc
 
-require 'zim/core'
-require 'zim/application_definition'
-require 'zim/source_tree_definition'
-require 'zim/repository'
-require 'zim/config'
-require 'zim/runtime'
-require 'zim/support'
+  class ApplicationDefinition < BaseElement
+    attr_reader :source_tree
+    attr_accessor :git_url
+
+    def initialize(source_tree, key, options, &block)
+      source_tree.send(:register_application, key, self)
+      @source_tree = source_tree
+      super(key, options, &block)
+    end
+  end
+end

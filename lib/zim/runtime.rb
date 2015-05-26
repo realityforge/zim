@@ -3,6 +3,10 @@ module Zim
 
   class << self
 
+    def repository
+      @repository ||= Repository.new
+    end
+
     # Run system command and raise an exception if it returns a non-zero exit status
     def mysystem(command)
       puts "system (#{Dir.pwd}): #{command}" if @verbose
