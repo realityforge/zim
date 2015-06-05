@@ -39,12 +39,12 @@ module Zim
 
     # change to the base directory before evaluating block
     def in_base_dir(&block)
-      in_dir(@base_dir, &block)
+      in_dir(Zim::Config.source_tree_directory, &block)
     end
 
     # change to the specified applications directory before evaluating block
     def in_app_dir(app, &block)
-      in_dir("#{@base_dir}/#{File.basename(app)}", &block)
+      in_dir("#{Zim::Config.source_tree_directory}/#{File.basename(app)}", &block)
     end
 
     def command(key, options = {:in_app_dir => true}, &block)

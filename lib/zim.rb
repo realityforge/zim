@@ -13,11 +13,13 @@
 #
 
 require 'fileutils'
+require 'optparse'
 
 require 'zim/core'
 require 'zim/application_definition'
 require 'zim/source_tree_definition'
 require 'zim/repository'
 require 'zim/config'
+require 'zim/driver'
 require 'zim/runtime'
 require 'zim/support'
