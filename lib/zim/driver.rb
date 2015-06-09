@@ -104,7 +104,7 @@ module Zim # nodoc
                   begin
                     run(key, app.key)
                   rescue Exception => e
-                    Zim::print_command_error(app.key, initial_args, "Error processing stage #{key} on application '#{app.key}'.")
+                    Zim::Driver.print_command_error(app.key, initial_args, "Error processing stage #{key} on application '#{app.key}'.")
                     raise e
                   end
                 end
@@ -113,9 +113,6 @@ module Zim # nodoc
           end
         end
       end
-
-      private
-
 
       def print_command_error(app, initial_args, message)
         puts message
