@@ -27,6 +27,10 @@ module Zim # nodoc
         @base_directory || (raise 'Base directory undefined')
       end
 
+      def source_tree_directory
+        "#{base_directory}/#{Zim.repository.current_source_tree.directory}"
+      end
+
       def log_level=(log_level)
         valid_log_levels = [:normal, :verbose, :quiet]
         raise "Invalid log level #{log_level} expected to be one of #{valid_log_levels.inspect}" unless valid_log_levels.include?(log_level)
