@@ -21,6 +21,8 @@ module Zim # nodoc
     @log_level = nil
 
     class << self
+      attr_accessor :first_app
+
       attr_writer :base_directory
 
       def base_directory

@@ -25,8 +25,6 @@ module Zim # nodoc
         customization_file = "#{Dir.pwd}/_zim.rb"
         require customization_file if File.exist?(customization_file)
 
-        @app_key = nil
-
         optparse = OptionParser.new do |opts|
           opts.on('-s', '--source-tree-set SOURCE_TREE_SET', 'Specify the set of projects to process') do |source_tree_key|
             unless Zim.repository.source_tree_exists?(source_tree_key)
@@ -37,7 +35,7 @@ module Zim # nodoc
           end
 
           opts.on('--first-app APP_NAME', 'The first app to process actions for') do |app_key|
-            @app_key = app_key
+            Zim::Config.first_app = app_key
           end
 
           opts.on('-v', '--verbose', 'More verbose logging') do
@@ -91,10 +89,10 @@ module Zim # nodoc
 
         FileUtils.mkdir_p Zim::Config.source_tree_directory
 
-        skip_apps = !@app_key.nil?
+        skip_apps = !Zim::Config.first_app.nil?
         Zim.context do
           Zim.repository.current_source_tree.applications.each do |app|
-            skip_apps = false if !@app_key.nil? && @app_key == app.key
+            skip_apps = false if !Zim::Config.first_app.nil? && Zim::Config.first_app == app.key
             if skip_apps
               puts "Skipping #{app.key}" if Zim::Config.verbose?
             else
