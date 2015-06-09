@@ -193,5 +193,22 @@ module Zim # nodoc
         rbenv_exec("braid diff #{path}")
       end
     end
+
+    # Add a command that updates the version of a dependency family
+    # in projects (assuming all dependencies are in build.yaml)
+    #
+    # e.g. Updating a dependency with a single coordinate
+    #
+    #    dependency(:greenmail, %w(com.icegreen:greenmail:jar), '1.4.0')
+    #
+    # e.g. Updating multiple dependencies with related coordinates
+    #
+    #    dependency(:iris, %w(iris:iris-db:jar iris:iris-soap-qa-support:jar iris:iris-soap-client:jar), 'e846707-879')
+    #
+    def dependency(code, artifacts, target_version, source_versions = nil)
+      command(:"patch_#{code}_dep") do |app|
+        patch_versions(app, artifacts, target_version, :source_versions => source_versions)
+      end
+    end
   end
 end
