@@ -92,13 +92,13 @@ module Zim # nodoc
         FileUtils.mkdir_p Zim::Config.source_tree_directory
 
         skip_apps = !@app_key.nil?
-            Zim.context do
-        Zim.repository.current_source_tree.applications.each do |app|
-          skip_apps = false if !@app_key.nil? && @app_key == app.key
-          if skip_apps
-            puts "Skipping #{app.key}" if Zim::Config.verbose?
-          else
-            puts "Processing #{app.key}" unless Zim::Config.quiet?
+        Zim.context do
+          Zim.repository.current_source_tree.applications.each do |app|
+            skip_apps = false if !@app_key.nil? && @app_key == app.key
+            if skip_apps
+              puts "Skipping #{app.key}" if Zim::Config.verbose?
+            else
+              puts "Processing #{app.key}" unless Zim::Config.quiet?
               in_base_dir do
                 args.each do |key|
                   begin
