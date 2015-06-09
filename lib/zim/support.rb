@@ -210,5 +210,19 @@ module Zim # nodoc
         patch_versions(app, artifacts, target_version, :source_versions => source_versions)
       end
     end
+
+    # Define braid update and diff tasks for single path.
+    # e.g.
+    #
+    #    braid_tasks('dbt', 'vendor/plugins/dbt')
+    #
+    def braid_tasks(key, path)
+      command(:"braid_update_#{key}") do |app|
+        braid_update(app, path)
+      end
+      command(:"braid_diff_#{key}") do |app|
+        braid_diff(app, path)
+      end
+    end
   end
 end
