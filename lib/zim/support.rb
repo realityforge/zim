@@ -70,7 +70,17 @@ module Zim # nodoc
       source_versions = options[:source_versions]
       name = options[:name] || dependencies[0].gsub(/\:.*/, '')
 
-      patched = patch_file('build.yaml') do |content|
+      patched =
+        patch_dependencies_in_file('build.yaml', dependencies, source_versions, target_version) ||
+        patch_dependencies_in_file('README.md', dependencies, source_versions, target_version)
+      if patched
+        mysystem("git commit -m \"Update the #{name} dependency.\"")
+        puts "Update the #{name} dependency in #{app}"
+      end
+    end
+
+    def patch_dependencies_in_file(filename, dependencies, source_versions, target_version)
+      patch_file(filename) do |content|
         dependencies.each do |dependency|
           if source_versions
             source_versions.each do |source_version|
@@ -81,10 +91,6 @@ module Zim # nodoc
           end
         end
         content
-      end
-      if patched
-        mysystem("git commit -m \"Update the #{name} dependency.\"")
-        puts "Update the #{name} dependency in #{app}"
       end
     end
 
