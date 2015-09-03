@@ -114,7 +114,7 @@ module Zim # nodoc
 
       def print_command_error(app, initial_args, message)
         puts message
-        puts "Fix the problem and rerun the command via:"
+        puts 'Fix the problem and rerun the command via:'
 
         args = []
         skip_next = false
