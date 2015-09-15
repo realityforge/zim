@@ -44,5 +44,8 @@ Also standard_update is useful for updating DomGen and DBT plus doing some gener
 You can also write your own commands to apply changes over multiple repositories. Add your commands to the zim file
 in the Zim project directory.
 
+You can then chain together base and custom commands:
+ruby zim --verbose --source-tree-set ARENA clean patch_build_yaml_repositories push
+
 We might write some more help in the future, but for now, just look at all the other commands in there and you'll get
 idea.
