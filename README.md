@@ -2,13 +2,11 @@
 
 Zim is a really simple tool used to perform mechanical transformation of multiple code bases.
 
-It will be doing lots of resetting, committing and pushing of changes, so it is imperative to use a separate base
-directory, not your development working directories.
-
 ## Configuration
 
-It is recommended to create a `_zim.rb` file in your Zim project directory and add a line specifying your
-base directory:
+Zim will be doing lots of resetting, committing and pushing of changes, so it is imperative to use a separate base
+directory, not your development working directories. It is recommended to create a `_zim.rb` file in your Zim project
+directory and add a line specifying your base directory:
 
     $ Zim::Config.base_directory = File.expand_path('~/Code/zim_base_directory')
 
