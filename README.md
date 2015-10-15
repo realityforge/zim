@@ -10,7 +10,7 @@ directory, not your development working directories.
 It is recommended to create a `_zim.rb` file in your Zim project directory and add a line specifying your
 base directory:
 
-    $ Zim::Config.base_directory = File.expand_path('~/zim_base_directory')
+    $ Zim::Config.base_directory = File.expand_path('~/Code/zim_base_directory')
 
 ## Running
 
