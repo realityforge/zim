@@ -1,6 +1,9 @@
 # Zim
 
-Zim is a really simple tool used to perform mechanical transformation of multiple code bases.
+Zim is a really simple tool used to perform mechanical transformation of multiple code bases. The workflow
+typically involves cloning or updating source code from git repositories, modification and committing of
+source code in the local repositories, verification of changes and finally pushing changes back to remote
+repositories.
 
 ## Configuration
 
