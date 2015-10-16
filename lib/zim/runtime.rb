@@ -42,30 +42,14 @@ module Zim
       in_dir(Zim::Config.source_tree_directory, &block)
     end
 
-    # change to the specified applications directory before evaluating block
-    def in_app_dir(app, &block)
-      in_dir("#{Zim::Config.source_tree_directory}/#{File.basename(app)}", &block)
-    end
-
     def command(key, options = {:in_app_dir => true}, &block)
       raise "Attempting to define duplicate command #{key}" if COMMANDS[key.to_s]
-      params = options.dup
-      COMMANDS[key.to_s] = Proc.new do |app|
-        if params[:in_app_dir]
-          in_app_dir(app) do
-            block.call(app)
-          end
-        else
-          in_base_dir do
-            block.call(app)
-          end
-        end
-      end
+      COMMANDS[key.to_s] = Command.new(key, options.merge(:action => block))
     end
 
     def run(key, app)
       puts "Unknown command specified: #{key}" unless COMMANDS[key.to_s]
-      COMMANDS[key.to_s].call(app)
+      COMMANDS[key.to_s].run(app)
     end
   end
 end

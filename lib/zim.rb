@@ -16,6 +16,7 @@ require 'fileutils'
 require 'optparse'
 
 require 'zim/core'
+require 'zim/command'
 require 'zim/application_definition'
 require 'zim/source_tree_definition'
 require 'zim/repository'
