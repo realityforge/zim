@@ -42,9 +42,15 @@ module Zim
       in_dir(Zim::Config.source_tree_directory, &block)
     end
 
+    def desc(description)
+      @next_description = description
+    end
+
     def command(key, options = {:in_app_dir => true}, &block)
       raise "Attempting to define duplicate command #{key}" if COMMANDS[key.to_s]
-      COMMANDS[key.to_s] = Command.new(key, options.merge(:action => block))
+      description = @next_description
+      @next_description = nil
+      COMMANDS[key.to_s] = Command.new(key, options.merge(:action => block, :description => description))
     end
 
     def run(key, app)

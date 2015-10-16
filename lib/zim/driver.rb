@@ -66,7 +66,7 @@ module Zim # nodoc
         end
 
         if 0 == args.size
-          puts "No commands specified. Specify one of:\n#{Zim::COMMANDS.keys.sort.collect { |c| "  * #{c}" }.join("\n")}"
+          puts "No commands specified. Specify one of:\n#{Zim::COMMANDS.keys.sort.collect { |c| "  * #{Zim::COMMANDS[c].help_text}" }.join("\n")}"
           exit
         end
 

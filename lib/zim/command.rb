@@ -15,10 +15,15 @@
 module Zim # nodoc
   # Class used to represent commands within zim
   class Command < BaseElement
+    attr_accessor :description
     attr_accessor :action
 
     def initialize(key, options, &block)
       super(key, options, &block)
+    end
+
+    def help_text
+      @description.nil? ? self.key.to_s : "#{key}: #{@description}"
     end
 
     attr_writer :in_app_dir
