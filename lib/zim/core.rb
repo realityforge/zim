@@ -44,7 +44,7 @@ module Zim # nodoc
 
     def initialize(key, options, &block)
       @key = key
-      super(options)
+      super(options, &block)
     end
   end
 
