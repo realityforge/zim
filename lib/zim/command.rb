@@ -33,7 +33,7 @@ module Zim # nodoc
           action.call(app)
         end
       else
-        in_base_dir do
+        Zim.in_base_dir do
           action.call(app)
         end
       end
