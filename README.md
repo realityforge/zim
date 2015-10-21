@@ -29,7 +29,7 @@ Zim has a number of Source Tree Sets, which specify groups of Git repositories. 
 zim file in the Zim project directory.
 
 You can specify which Source Tree Set to operator over using the `-s` or `--source-tree-set` command line parameter. If
-unspecified, the changes will be applied to the default source tree set.
+unspecified, the changes will be applied to the default source tree set which happens to be `'DEPI'`.
 
 ## Base commands
 
@@ -53,6 +53,24 @@ in the Zim project directory.
 You can then chain together base and custom commands:
 
     $ ./zim --verbose --source-tree-set ARENA clean patch_build_yaml_repositories push
+
+## Normal Workflow
+
+The normal workflow for making changes is to modify the `./zim` file to add/update tasks you want to run
+and then run the tasks via:
+
+    $ ./zim clean mytask push
+
+This will update the DEPI repositories, to update the ARENA repositories run:
+
+    $ ./zim -s ARENA clean mytask push
+
+A fairly task is to update the version of a dependent library. First you update the version number of the dependency
+in the `./zim` file and run something like:
+
+    $ ./zim clean patch_mercury_dep push
+
+## Epilogue
 
 We might write some more help in the future, but for now, just look at all the other commands in there and you'll get
 idea.
