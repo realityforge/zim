@@ -147,7 +147,7 @@ module Zim # nodoc
     #      puts "Buildr was updated!"
     #    end
     #
-    def patch_gemfile(commit_message, &block)
+    def patch_gemfile(commit_message, options = {}, &block)
       filename = "#{Dir.pwd}/Gemfile"
       if File.exist?(filename)
         contents = IO.read(filename)
@@ -162,7 +162,7 @@ module Zim # nodoc
             mysystem('git ls-files Gemfile.lock --error-unmatch > /dev/null 2> /dev/null && git add Gemfile.lock')
           rescue
           end
-          mysystem("git commit -m \"#{commit_message}\"")
+          mysystem("git commit -m \"#{commit_message}\"") unless options[:no_commit]
           return true
         end
       end
