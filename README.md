@@ -38,7 +38,7 @@ all the repositories in your Source Tree Set.
 
 So a good way to start is to clone into your new base directory:
 
-    $ ./zim --verbose --source-tree-set ARENA clone
+    $ ./zim --verbose --source-tree-set GITHUB clone
 
 There are also some useful composite commands such as clean, which does a [clone, fetch, reset, goto_master, pull]
 basically getting ready to apply some patches.
@@ -52,7 +52,7 @@ in the Zim project directory.
 
 You can then chain together base and custom commands:
 
-    $ ./zim --verbose --source-tree-set ARENA clean patch_build_yaml_repositories push
+    $ ./zim --verbose clean patch_build_yaml_repositories push
 
 ## Normal Workflow
 
@@ -61,9 +61,9 @@ and then run the tasks via:
 
     $ ./zim clean mytask push
 
-This will update the DEPI repositories, to update the ARENA repositories run:
+This will update the DEPI repositories, to update the GITHUB repositories run:
 
-    $ ./zim -s ARENA clean mytask push
+    $ ./zim -s GITHUB clean mytask push
 
 A fairly task is to update the version of a dependent library. First you update the version number of the dependency
 in the `./zim` file and run something like:
