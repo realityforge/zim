@@ -44,6 +44,8 @@ There are also some useful composite commands such as clean, which does a [clone
 basically getting ready to apply some patches.
 
 Also `standard_update` is useful for updating DomGen and DBT plus doing some general cleaning of whitespace issues.
+If you wish to do a `standard_update` to just the small set of projects you are touching through some other patch, you
+can utilise the `standard_update_changed` command.
 
 ## Custom commands
 
@@ -59,16 +61,16 @@ You can then chain together base and custom commands:
 The normal workflow for making changes is to modify the `./zim` file to add/update tasks you want to run
 and then run the tasks via:
 
-    $ ./zim clean mytask push
+    $ ./zim clean mytask standard_update_changed push
 
 This will update the DEPI repositories, to update the GITHUB repositories run:
 
-    $ ./zim -s GITHUB clean mytask push
+    $ ./zim -s GITHUB clean mytask standard_update_changed push
 
-A fairly task is to update the version of a dependent library. First you update the version number of the dependency
+A fairly common task is to update the version of a dependent library. First you update the version number of the dependency
 in the `./zim` file and run something like:
 
-    $ ./zim clean patch_mercury_dep push
+    $ ./zim clean patch_mercury_dep standard_update_changed push
 
 ## Epilogue
 

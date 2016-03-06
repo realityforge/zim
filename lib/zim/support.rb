@@ -211,10 +211,10 @@ module Zim # nodoc
     #
     #    dependency(:iris, %w(iris:iris-db:jar iris:iris-soap-qa-support:jar iris:iris-soap-client:jar), 'e846707-879')
     #
-    def dependency(code, artifacts, target_version, source_versions = nil)
+    def dependency(code, artifacts, target_version, options = {})
       desc "Update the #{code} dependencies in build.yaml"
       command(:"patch_#{code}_dep") do |app|
-        patch_versions(app, artifacts, target_version, :source_versions => source_versions)
+        patch_versions(app, artifacts, target_version, options)
       end
     end
 
