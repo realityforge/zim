@@ -18,6 +18,11 @@ module Zim # nodoc
 
   class << self
 
+    # Return true if the current working directory has no changes that are not pushed
+    def cwd_has_unpushed_changes?
+      `git log origin/master..master`.split.select { |l| l.size != 0 }.size > 0
+    end
+
     # Execute a ruby command within the context of rbenv environment.
     # e.g.
     #
