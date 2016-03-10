@@ -254,7 +254,7 @@ module Zim # nodoc
 
     # Make sure the filesystem matches the contents of git repository
     def git_clean_filesystem
-      mysystem('git clean -f -d -x')
+      mysystem('git clean -f -d -x 2> /dev/null > /dev/null')
     end
 
     # Checkout specified branch, creating branch if create is enabled
