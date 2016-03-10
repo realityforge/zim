@@ -241,6 +241,11 @@ module Zim # nodoc
       end
     end
 
+    # Make sure the filesystem matches the contents of git repository
+    def git_clean_filesystem
+      mysystem('git clean -f -d -x')
+    end
+
     # Checkout specified branch, creating branch if create is enabled
     def git_checkout(branch = 'master', create = false)
       if !create || `git branch -a`.split.collect{|l|l.gsub('remotes/origin/','')}.sort.uniq.include?(branch)
