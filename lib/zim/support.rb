@@ -259,7 +259,7 @@ module Zim # nodoc
 
     # Checkout specified branch, creating branch if create is enabled
     def git_checkout(branch = 'master', create = false)
-      if !create || `git branch -a`.split.collect{|l|l.gsub('remotes/origin/','')}.sort.uniq.include?(branch)
+      if !create || `git branch -a`.split.collect { |l| l.gsub('remotes/origin/', '') }.sort.uniq.include?(branch)
         mysystem("git checkout #{branch} > /dev/null 2> /dev/null")
       else
         mysystem("git checkout -b #{branch} > /dev/null 2> /dev/null")
