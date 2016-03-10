@@ -241,6 +241,17 @@ module Zim # nodoc
       end
     end
 
+    # Commit changed files with specified message. Swallow error if fail_on_error is true
+    def git_commit(message, fail_on_error = true)
+      begin
+        mysystem("git commit -m \"#{message}\" 2> /dev/null > /dev/null")
+        return true
+      rescue Exception => e
+        raise e if fail_on_error
+        return false
+      end
+    end
+
     # Make sure the filesystem matches the contents of git repository
     def git_clean_filesystem
       mysystem('git clean -f -d -x')
