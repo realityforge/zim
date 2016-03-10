@@ -81,7 +81,7 @@ module Zim # nodoc
 
       patched =
         patch_dependencies_in_file('build.yaml', dependencies, source_versions, target_version) ||
-        patch_dependencies_in_file('README.md', dependencies, source_versions, target_version)
+          patch_dependencies_in_file('README.md', dependencies, source_versions, target_version)
       if patched
         mysystem("git commit -m \"Update the #{name} dependency.\"")
         puts "Update the #{name} dependency in #{app}"
