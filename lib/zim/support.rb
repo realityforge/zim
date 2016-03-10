@@ -257,6 +257,23 @@ module Zim # nodoc
       mysystem('git clean -f -d -x 2> /dev/null > /dev/null')
     end
 
+    # Reset the index. Don't change the filesyste,
+    def git_reset_index
+      mysystem('git reset 2> /dev/null > /dev/null')
+    end
+
+    # Add all files that are part of the checkout
+    def git_add_all_files
+      files = `git ls-files`.split("\n").collect { |f| "'#{f}'" }
+      index = 0
+      while index < files.size
+        block_size = 100
+        to_process = files[index, block_size]
+        index += block_size
+        mysystem("git add --all --force #{to_process.join(' ')} 2> /dev/null > /dev/null")
+      end
+    end
+
     # Checkout specified branch, creating branch if create is enabled
     def git_checkout(branch = 'master', create = false)
       if !create || `git branch -a`.split.collect { |l| l.gsub('remotes/origin/', '') }.sort.uniq.include?(branch)
