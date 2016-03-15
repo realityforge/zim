@@ -257,7 +257,27 @@ module Zim # nodoc
       mysystem('git clean -f -d -x 2> /dev/null > /dev/null')
     end
 
-    # Reset the index. Don't change the filesyste,
+    def git_fetch
+      mysystem('git fetch --prune')
+    end
+
+    # Pull from specified remote or origin if unspecified
+    def git_pull(remote = '')
+      mysystem("git pull #{remote}")
+    end
+
+    # Push to specified remote or origin if unspecified
+    def git_push(remote = 'origin')
+      mysystem("git push #{remote}")
+    end
+
+    # Reset the index, local filesystem and potentially branch
+    def git_reset_branch(branch = '')
+      mysystem("git reset --hard #{branch} 2> /dev/null > /dev/null")
+      git_clean_filesystem
+    end
+
+    # Reset the index. Don't change the filesystem
     def git_reset_index
       mysystem('git reset 2> /dev/null > /dev/null')
     end
@@ -280,6 +300,78 @@ module Zim # nodoc
         mysystem("git checkout #{branch} > /dev/null 2> /dev/null")
       else
         mysystem("git checkout -b #{branch} > /dev/null 2> /dev/null")
+      end
+    end
+
+    # Add standard set of commands for interacting with git
+    # repositories that applicable to all users of zim
+    def add_standard_git_tasks
+      command(:clone, :in_app_dir => false) do |app|
+        unless File.directory?(File.basename(app))
+          mysystem("git clone #{Zim.repository.current_source_tree.application_by_name(app).git_url}")
+        end
+      end
+
+      command(:gitk) do
+        mysystem('gitk --all &') if Zim.cwd_has_unpushed_changes?
+      end
+
+      command(:fetch) do
+        git_fetch
+      end
+
+      command(:reset) do
+        git_reset_branch
+      end
+
+      command(:reset_origin) do
+        git_reset_branch('origin/master')
+      end
+
+      command(:goto_master) do
+        git_checkout
+      end
+
+      command(:pull) do
+        git_pull
+      end
+
+      command(:push) do
+        git_push if Zim.cwd_has_unpushed_changes?
+      end
+
+      command(:clean, :in_app_dir => false) do |app|
+        run(:clone, app)
+        run(:fetch, app)
+        run(:reset, app)
+        run(:goto_master, app)
+        run(:pull, app)
+      end
+
+      command(:clean_if_changed) do
+        run(:clean, app) if Zim.cwd_has_unpushed_changes?
+      end
+    end
+
+    # Add standard set of commands for interacting with bundler
+    def add_standard_bundler_tasks
+      desc 'Install all dependencies for application if Gemfile present'
+      command(:bundle_install) do
+        rbenv_exec('bundle install') if File.exist?('Gemfile')
+      end
+    end
+
+    # Add standard set of commands for interacting with buildr
+    def add_standard_buildr_tasks
+      desc 'Download all artifacts application if buildfile'
+      command(:buildr_artifacts) do
+        if File.exist?('buildfile')
+          begin
+            rbenv_exec('buildr artifacts:sources artifacts clean')
+          rescue
+            # ignored
+          end
+        end
       end
     end
   end
