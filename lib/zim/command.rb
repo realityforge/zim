@@ -35,9 +35,16 @@ module Zim # nodoc
     def run(app)
       if in_app_dir?
         in_app_dir(app) do
+          return if Zim::Config.only_modify_changed? && !Zim.cwd_has_unpushed_changes?
           action.call(app)
         end
       else
+        if Zim::Config.only_modify_changed?
+          return unless File.exist?(dir_for_app(app))
+          in_app_dir(app) do
+            return unless Zim.cwd_has_unpushed_changes?
+          end
+        end
         Zim.in_base_dir do
           action.call(app)
         end

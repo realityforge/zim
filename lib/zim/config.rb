@@ -50,6 +50,14 @@ module Zim # nodoc
       def quiet?
         self.log_level == :verbose
       end
+
+      def only_modify_changed?
+        !!@only_modify_changed
+      end
+
+      def only_modify_changed=(only_modify_changed)
+        @only_modify_changed = only_modify_changed
+      end
     end
   end
 end

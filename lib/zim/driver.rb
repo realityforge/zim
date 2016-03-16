@@ -38,6 +38,10 @@ module Zim # nodoc
             Zim::Config.first_app = app_key
           end
 
+          opts.on('-c', '--changed', 'Only run commands if source tree is already modified.') do
+            Zim::Config.only_modify_changed = true
+          end
+
           opts.on('-v', '--verbose', 'More verbose logging') do
             Zim::Config.log_level = :verbose
           end
