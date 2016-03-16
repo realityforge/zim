@@ -46,7 +46,11 @@ module Zim # nodoc
 
     # change to the specified applications directory before evaluating block
     def in_app_dir(app, &block)
-      Zim.in_dir("#{Zim::Config.source_tree_directory}/#{File.basename(app)}", &block)
+      Zim.in_dir(dir_for_app(app), &block)
+    end
+
+    def dir_for_app(app)
+      "#{Zim::Config.source_tree_directory}/#{File.basename(app)}"
     end
   end
 end
