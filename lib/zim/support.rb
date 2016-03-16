@@ -347,10 +347,6 @@ module Zim # nodoc
         run(:goto_master, app)
         run(:pull, app)
       end
-
-      command(:clean_if_changed) do
-        run(:clean, app) if Zim.cwd_has_unpushed_changes?
-      end
     end
 
     # Add standard set of commands for interacting with bundler
