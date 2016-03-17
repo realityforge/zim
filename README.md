@@ -45,7 +45,7 @@ basically getting ready to apply some patches.
 
 Also `standard_update` is useful for updating `domgen` and `dbt` plus doing some general cleaning of whitespace issues.
 If you wish to do a `standard_update` to just the small set of projects you are touching through some other patch, you
-can utilise the `standard_update_changed` command.
+can pass the option `-c` that will only run commands if the source tree already has changes in it.
 
 ## Custom commands
 
