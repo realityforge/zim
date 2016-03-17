@@ -1,7 +1,5 @@
-.idea
-pkg
-pkg/*
-rdoc
+/pkg
+/rdoc
 /*.iml
 /*.ipr
 /*.iws
