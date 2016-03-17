@@ -43,7 +43,7 @@ So a good way to start is to clone into your new base directory:
 There are also some useful composite commands such as clean, which does a [clone, fetch, reset, goto_master, pull]
 basically getting ready to apply some patches.
 
-Also `standard_update` is useful for updating DomGen and DBT plus doing some general cleaning of whitespace issues.
+Also `standard_update` is useful for updating `domgen` and `dbt` plus doing some general cleaning of whitespace issues.
 If you wish to do a `standard_update` to just the small set of projects you are touching through some other patch, you
 can utilise the `standard_update_changed` command.
 
