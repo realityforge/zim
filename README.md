@@ -26,7 +26,7 @@ Get a list of commands:
 ## Source Tree Sets
 
 Zim has a number of Source Tree Sets, which specify groups of Git repositories. To add new repositories, edit the
-zim file in the Zim project directory.
+`./zim_config.rb` file in the Zim project directory.
 
 You can specify which Source Tree Set to operator over using the `-s` or `--source-tree-set` command line parameter. If
 unspecified, the changes will be applied to the default source tree set which happens to be `'DEPI'`.
@@ -58,7 +58,7 @@ You can then chain together base and custom commands:
 
 ## Normal Workflow
 
-The normal workflow for making changes is to modify the `./zim` file to add/update tasks you want to run
+The normal workflow for making changes is to modify the `./zim_config.rb` file to add/update tasks you want to run
 and then run the tasks via:
 
     $ ./zim clean mytask standard_update_changed push
@@ -68,7 +68,7 @@ This will update the DEPI repositories, to update the GITHUB repositories run:
     $ ./zim -s GITHUB clean mytask standard_update_changed push
 
 A fairly common task is to update the version of a dependent library. First you update the version number of the dependency
-in the `./zim` file and run something like:
+in the `./zim_config.rb` file and run something like:
 
     $ ./zim clean patch_mercury_dep standard_update_changed push
 
