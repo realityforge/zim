@@ -61,16 +61,12 @@ You can then chain together base and custom commands:
 The normal workflow for making changes is to modify the `./zim_config.rb` file to add/update tasks you want to run
 and then run the tasks via:
 
-    $ ./zim clean mytask standard_update_changed push
-
-This will update the DEPI repositories, to update the GITHUB repositories run:
-
-    $ ./zim -s GITHUB clean mytask standard_update_changed push
+    $ ./zim clean mytask standard_update push
 
 A fairly common task is to update the version of a dependent library. First you update the version number of the dependency
 in the `./zim_config.rb` file and run something like:
 
-    $ ./zim clean patch_mercury_dep standard_update_changed push
+    $ ./zim clean patch_mercury_dep push
 
 ## Epilogue
 
