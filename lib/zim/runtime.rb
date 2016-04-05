@@ -54,7 +54,7 @@ module Zim
     end
 
     def run(key, app)
-      puts "Unknown command specified: #{key}" unless COMMANDS[key.to_s]
+      raise "Unknown command specified: #{key}" unless COMMANDS[key.to_s]
       COMMANDS[key.to_s].run(app)
     end
   end
