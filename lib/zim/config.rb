@@ -48,7 +48,7 @@ module Zim # nodoc
       end
 
       def quiet?
-        self.log_level == :verbose
+        self.log_level == :quiet
       end
 
       def only_modify_changed?
