@@ -54,6 +54,14 @@ module Zim # nodoc
             Zim::Config.log_level = :quiet
           end
 
+          opts.on('-i', '--include TAG', 'Specify application tags that must appear when selecting applications') do |tag|
+            Zim::Config.include_tags << tag
+          end
+
+          opts.on('-e', '--exclude TAG', 'Specify application tags that must not appear when selecting applications') do |tag|
+            Zim::Config.exclude_tags << tag
+          end
+
           opts.on('-h', '--help', 'Display this screen') do
             puts opts
             exit
@@ -100,6 +108,14 @@ module Zim # nodoc
             if skip_apps
               puts "Skipping #{app.key}" if Zim::Config.verbose?
             else
+              if Zim::Config.include_tags.size > 0 || Zim::Config.exclude_tags.size > 0
+                if Zim::Config.include_tags.size > 0
+                  next unless Zim::Config.include_tags.all?{|t| app.tags.include?(t)}
+                end
+                if Zim::Config.exclude_tags.size > 0
+                  next if Zim::Config.exclude_tags.any?{|t| app.tags.include?(t)}
+                end
+              end
               puts "Processing #{app.key}" unless Zim::Config.quiet?
               in_base_dir do
                 args.each do |key|

@@ -51,6 +51,14 @@ module Zim # nodoc
         self.log_level == :quiet
       end
 
+      def include_tags
+        @include_tags ||= []
+      end
+
+      def exclude_tags
+        @exclude_tags ||= []
+      end
+
       def only_modify_changed?
         !!@only_modify_changed
       end
