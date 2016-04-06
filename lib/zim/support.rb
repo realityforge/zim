@@ -370,5 +370,17 @@ module Zim # nodoc
         end
       end
     end
+
+    # add tasks that help get info from the zim system
+    def add_standard_info_tasks
+      desc 'Perform no action other than print the app name and tags unless quiet'
+      command(:print) do |app|
+        if Zim::Config.quiet?
+          puts app
+        else
+          puts "#{app}: #{Zim.repository.current_source_tree.application_by_name(app).tags.inspect}"
+        end
+      end
+    end
   end
 end
