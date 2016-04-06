@@ -25,6 +25,12 @@ module Zim # nodoc
 
     attr_writer :git_url
 
+    attr_writer :tags
+
+    def tags
+      @tags ||= []
+    end
+
     def git_url
       git_url = @git_url || self.key.to_s
       git_url = "#{source_tree.base_git_url}/#{git_url}.git" unless git_url.include?(':')
