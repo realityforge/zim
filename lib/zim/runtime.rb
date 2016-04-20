@@ -54,8 +54,12 @@ module Zim
     end
 
     def run(key, app)
-      raise "Unknown command specified: #{key}" unless COMMANDS[key.to_s]
-      COMMANDS[key.to_s].run(app)
+      command = COMMANDS[key.to_s]
+      raise "Unknown command specified: #{key}" unless command
+      if command.run?(app)
+        puts "Processing #{command.key} on #{app}" if Zim::Config.verbose?
+        command.run(app)
+      end
     end
   end
 end
