@@ -116,7 +116,7 @@ module Zim # nodoc
                   next if Zim::Config.exclude_tags.any?{|t| app.tags.include?(t)}
                 end
               end
-              puts "Processing #{app.key}" unless Zim::Config.quiet?
+              puts "Processing #{app.key}" if Zim::Config.verbose?
               in_base_dir do
                 args.each do |key|
                   begin
