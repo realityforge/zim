@@ -32,25 +32,9 @@ module Zim # nodoc
       @in_app_dir.nil? ? true : !!@in_app_dir
     end
 
-    def run?(app)
-      return true unless Zim::Config.only_modify_changed?
-      if in_app_dir?
-        in_app_dir(app) do
-          return Zim.cwd_has_unpushed_changes?
-        end
-      else
-        Zim.in_base_dir do
-          return false unless File.exist?(dir_for_app(app))
-          in_app_dir(app) do
-            return Zim.cwd_has_unpushed_changes?
-          end
-        end
-      end
-    end
-
     def run(app)
       if in_app_dir?
-        in_app_dir(app) do
+        Zim.in_app_dir(app) do
           action.call(app)
         end
       else
@@ -58,15 +42,6 @@ module Zim # nodoc
           action.call(app)
         end
       end
-    end
-
-    # change to the specified applications directory before evaluating block
-    def in_app_dir(app, &block)
-      Zim.in_dir(dir_for_app(app), &block)
-    end
-
-    def dir_for_app(app)
-      "#{Zim::Config.source_tree_directory}/#{File.basename(app)}"
     end
   end
 end

@@ -116,14 +116,16 @@ module Zim # nodoc
                   next if Zim::Config.exclude_tags.any?{|t| app.tags.include?(t)}
                 end
               end
-              puts "Processing #{app.key}" if Zim::Config.verbose?
-              in_base_dir do
-                args.each do |key|
-                  begin
-                    run(key, app.key)
-                  rescue Exception => e
-                    Zim::Driver.print_command_error(app.key, initial_args, "Error processing stage #{key} on application '#{app.key}'.")
-                    raise e
+              if run?(app)
+                puts "Processing #{app.key}" unless Zim::Config.quiet?
+                in_base_dir do
+                  args.each do |key|
+                    begin
+                      run(key, app.key)
+                    rescue Exception => e
+                      Zim::Driver.print_command_error(app.key, initial_args, "Error processing stage #{key} on application '#{app.key}'.")
+                      raise e
+                    end
                   end
                 end
               end

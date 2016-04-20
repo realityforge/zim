@@ -53,13 +53,30 @@ module Zim
       COMMANDS[key.to_s] = Command.new(key, options.merge(:action => block, :description => description))
     end
 
+    def run?(app)
+      return true unless Zim::Config.only_modify_changed?
+      Zim.in_base_dir do
+        return false unless File.exist?(dir_for_app(app.key))
+        in_app_dir(app.key) do
+          return Zim.cwd_has_unpushed_changes?
+        end
+      end
+    end
+
+    # change to the specified applications directory before evaluating block
+    def in_app_dir(app, &block)
+      Zim.in_dir(dir_for_app(app), &block)
+    end
+
+    def dir_for_app(app)
+      "#{Zim::Config.source_tree_directory}/#{File.basename(app)}"
+    end
+
     def run(key, app)
       command = COMMANDS[key.to_s]
       raise "Unknown command specified: #{key}" unless command
-      if command.run?(app)
-        puts "Processing #{command.key} on #{app}" if Zim::Config.verbose?
-        command.run(app)
-      end
+      puts "Processing #{command.key} on #{app}" if Zim::Config.verbose?
+      command.run(app)
     end
   end
 end
