@@ -77,7 +77,10 @@ module Zim # nodoc
     def patch_versions(app, dependencies, target_version, options = {})
       dependencies = dependencies.is_a?(Array) ? dependencies : [dependencies]
       source_versions = options[:source_versions]
+      skip_apps = options[:skip_apps] || []
       name = options[:name] || dependencies[0].gsub(/\:.*/, '')
+
+      return if skip_apps.include?(app)
 
       patched =
         patch_dependencies_in_file('build.yaml', dependencies, source_versions, target_version) ||
