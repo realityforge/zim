@@ -230,6 +230,91 @@ module Zim # nodoc
       end
     end
 
+    # Add a command that updates the version of a dependency family
+    # in projects (assuming all dependencies are in build.yaml). A task
+    # may also be created if the coordinates need to be updated at the same time.
+    # This is a higher-level version of the dependency method that assumes
+    # more about the dependency group.
+    #
+    # e.g. Updating a dependency with a single coordinate
+    #
+    #    dependency_group(:greenmail, 'com.icegreen', 'greenmail:jar', '1.4.0')
+    #
+    # e.g. Updating a set of dependencies with the same group coordinate
+    #
+    #    dependency_group(:iris, 'iris', %w(iris-db:jar iris-soap-qa-support:jar iris-soap-client:jar), 'e846707-879')
+    #
+    # e.g. Updating a set of dependencies that appear in the multiple groups
+    #
+    #    dependency_group(:syncrecord,
+    #                     %w(iris.syncrecord iris.syncrecord.pg),
+    #                     %w(sync-record-db:jar sync-record-server:jar sync-record-model-qa-support:jar sync-record-server-qa-support:jar sync-record-rest-client:jar),
+    #                     'b91c2cd-345')
+    #
+    # e.g. Updating a set of dependencies that appear in the multiple groups, also
+    # adding task to update coordinates at the same time.
+    #
+    #    dependency_group(:syncrecord,
+    #                     %w(iris.syncrecord iris.syncrecord.pg),
+    #                     %w(sync-record-db:jar sync-record-server:jar sync-record-model-qa-support:jar sync-record-server-qa-support:jar sync-record-rest-client:jar),
+    #                     'b91c2cd-345',
+    #                     :name_changes =>
+    #                       {
+    #                         'iris-syncrecord-db:jar' => 'sync-record-db:jar',
+    #                         'iris-syncrecord-server:jar' => 'sync-record-server:jar',
+    #                         'iris-syncrecord-rest-client:jar' => 'sync-record-rest-client:jar',
+    #                         'iris-syncrecord-server-qa-support:jar' => 'sync-record-server-qa-support:jar',
+    #                         'iris-syncrecord-model-qa-support:jar' => 'sync-record-model-qa-support:jar'
+    #                       })
+    #
+    def dependency_group(code, groups, names, version, options = {})
+      groups = [groups] unless groups.is_a?(Array)
+      names = [names] unless names.is_a?(Array)
+
+      artifacts = groups.collect { |g| names.collect { |n| "#{g}:#{n}" } }.flatten
+
+      options = options.dup
+
+      group_changes = options.delete(:group_changes)
+      name_changes = options.delete(:name_changes)
+
+      dependency(code, artifacts, version, options)
+
+      if group_changes || name_changes
+        desc "Update the #{code} dependencies in build.yaml"
+        command(:"patch_#{code}_coords") do |app|
+          changes = {}
+          if group_changes && name_changes
+            group_changes.each_pair do |source_group, target_group|
+              name_changes.each_pair do |source_name, target_name|
+                changes["#{source_group}:#{source_name}"] = "#{target_group}:#{target_name}"
+              end
+              names.select { |n| !name_changes.values.include?(n) }.each do |name|
+                changes["#{source_group}:#{name}"] = "#{target_group}:#{name}"
+              end
+            end
+          elsif group_changes
+            group_changes.each_pair do |source_group, target_group|
+              names.each do |name|
+                changes["#{source_group}:#{name}"] = "#{target_group}:#{name}"
+              end
+            end
+          else
+            groups.each do |group|
+              name_changes.each_pair do |source_name, target_name|
+                changes["#{group}:#{source_name}"] = "#{group}:#{target_name}"
+              end
+            end
+          end
+          patch_dependency_coordinates(app,
+                                       changes,
+                                       version,
+                                       options)
+          run(:"patch_#{code}_dep", app)
+        end
+      end
+    end
+
     # Define braid update and diff tasks for single path.
     # e.g.
     #
