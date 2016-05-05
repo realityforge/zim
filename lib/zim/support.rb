@@ -395,9 +395,28 @@ module Zim # nodoc
     # repositories that applicable to all users of zim
     def add_standard_git_tasks
       command(:clone, :in_app_dir => false) do |app|
-        unless File.directory?(File.basename(app))
-          mysystem("git clone #{Zim.repository.current_source_tree.application_by_name(app).git_url}")
+        url = Zim.repository.current_source_tree.application_by_name(app).git_url
+
+        directory_exists = File.directory?(dir_for_app(app))
+
+        if directory_exists
+          found = false
+          in_app_dir(app) do
+            `git remote -v`.split("\n").each do |line|
+              elements = line.split(/[ \t]+/)
+              if elements[0] == 'origin' && elements[1] == url && elements[2] == '(fetch)'
+                found = true
+                break
+              end
+            end
+          end
+          unless found
+            mysystem("rm -rf #{dir_for_app(app)}")
+            directory_exists = false
+          end
         end
+
+        mysystem("git clone #{url}") unless directory_exists
       end
 
       command(:gitk) do
