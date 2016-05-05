@@ -29,11 +29,12 @@ module Zim
 
     # Evaluate block after changing directory to specified directory
     def in_dir(dir, &block)
+      original_dir = Dir.pwd
       begin
         Dir.chdir(dir)
         block.call
       ensure
-        Dir.chdir(dir)
+        Dir.chdir(original_dir)
       end
     end
 
