@@ -337,7 +337,7 @@ module Zim # nodoc
       desc 'Perform updates for all braids'
       command(:braid_update_all) do |app|
         braids.keys.each do |key|
-          run(:"braid_diff_#{key}", app)
+          run(:"braid_update_#{key}", app)
         end
       end
     end
