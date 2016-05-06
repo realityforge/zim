@@ -315,6 +315,20 @@ module Zim # nodoc
       end
     end
 
+    # Define braid tasks for supplied mapping of key => path. Also create braid_diff_all and braid_update_all tasks.
+    # e.g.
+    #
+    #    braid_tasks({'dbt' => 'vendor/plugins/dbt', 'domgen' => 'vendor/plugins/domgen'})
+    #
+    def braid_tasks(key, path)
+      command(:"braid_update_#{key}") do |app|
+        braid_update(app, path)
+      end
+      command(:"braid_diff_#{key}") do |app|
+        braid_diff(app, path)
+      end
+    end
+
     # Define braid update and diff tasks for single path.
     # e.g.
     #
