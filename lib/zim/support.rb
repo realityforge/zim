@@ -320,12 +320,25 @@ module Zim # nodoc
     #
     #    braid_tasks({'dbt' => 'vendor/plugins/dbt', 'domgen' => 'vendor/plugins/domgen'})
     #
-    def braid_tasks(key, path)
-      command(:"braid_update_#{key}") do |app|
-        braid_update(app, path)
+    def braid_tasks(braids)
+      braids.each_pair do |key, path|
+        standard_braid_tasks(key, path)
       end
-      command(:"braid_diff_#{key}") do |app|
-        braid_diff(app, path)
+
+      desc 'Perform diffs against all braids'
+      command(:braid_diff_all) do |app|
+        puts "Braid diffing #{app}\n=================\n"
+        braids.keys.each do |key|
+          run(:"braid_diff_#{key}", app)
+        end
+        puts "=================\n\n\n\n"
+      end
+
+      desc 'Perform updates for all braids'
+      command(:braid_update_all) do |app|
+        braids.keys.each do |key|
+          run(:"braid_diff_#{key}", app)
+        end
       end
     end
 
@@ -334,7 +347,7 @@ module Zim # nodoc
     #
     #    braid_tasks('dbt', 'vendor/plugins/dbt')
     #
-    def braid_tasks(key, path)
+    def standard_braid_tasks(key, path)
       command(:"braid_update_#{key}") do |app|
         braid_update(app, path)
       end
