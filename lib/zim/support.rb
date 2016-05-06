@@ -515,6 +515,12 @@ module Zim # nodoc
           git_commit('Normalize whitespace', false)
         end
       end
+
+      desc 'Normalize files using buildr_plus rules'
+      command(:normalize_all) do |app|
+        run(:normalize_gitignore, app)
+        run(:normalize_whitespace, app)
+      end
     end
 
     # add tasks that help get info from the zim system
