@@ -23,7 +23,7 @@ module Zim # nodoc
     end
 
     def help_text
-      @description.nil? ? self.key.to_s : "#{key}: #{@description}"
+      @description.nil? ? self.key.to_s : "#{key} : #{@description}"
     end
 
     attr_writer :in_app_dir
