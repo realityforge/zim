@@ -478,6 +478,31 @@ module Zim # nodoc
       end
     end
 
+    # Add standard set of commands for interacting with buildr when buildr_plus is present
+    def add_standard_buildr_plus_tasks
+      desc 'Normalize the gitignore file based on buildr_plus rules'
+      command(:normalize_gitignore) do |app|
+        if File.exist?('vendor/tools/buildr_plus')
+          git_clean_filesystem
+          rbenv_exec('bundle exec buildr gitignore:fix')
+          git_reset_index
+          git_add_all_files
+          git_commit('Normalize .gitignore', false)
+        end
+      end
+
+      desc 'Normalize the whitespace in files based on buildr_plus rules'
+      command(:normalize_whitespace) do |app|
+        if File.exist?('vendor/tools/buildr_plus')
+          git_clean_filesystem
+          rbenv_exec('bundle exec buildr ws:fix')
+          git_reset_index
+          git_add_all_files
+          git_commit('Normalize whitespace', false)
+        end
+      end
+    end
+
     # add tasks that help get info from the zim system
     def add_standard_info_tasks
       desc 'Perform no action other than print the app name and tags unless quiet'
