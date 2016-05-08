@@ -181,6 +181,20 @@ module Zim # nodoc
       false
     end
 
+    # Patch the gem  specified in Gemfile from a version to a version.
+    # e.g.
+    #
+    #    patch_gem('buildr', '1.4.20', '1.4.22')
+    #
+    def patch_gem(gem, from_version, to_version)
+      desc "Update the version of the #{gem} gem from #{from_version} to #{to_version}"
+      command(:"patch_#{gem}_gem") do |app|
+        patch_gemfile("Update the version of the #{gem} gem from #{from_version} to #{to_version}.") do |content|
+          content.gsub("gem '#{gem}', '= #{from_version}'", "gem '#{gem}', '= #{to_version}'")
+        end
+      end
+    end
+
     # Execute braid update on path if the path is present.
     # This command assumes rbenv context with braid installed.
     # e.g.
