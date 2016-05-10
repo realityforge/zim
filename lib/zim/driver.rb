@@ -62,6 +62,10 @@ module Zim # nodoc
             Zim::Config.exclude_tags << tag
           end
 
+          opts.on('-f', '--filter CMD', 'Specify command that must return success to include project') do |filter|
+            Zim::Config.filters << filter
+          end
+
           opts.on('-h', '--help', 'Display this screen') do
             puts opts
             exit
@@ -110,11 +114,21 @@ module Zim # nodoc
             else
               if Zim::Config.include_tags.size > 0 || Zim::Config.exclude_tags.size > 0
                 if Zim::Config.include_tags.size > 0
-                  next unless Zim::Config.include_tags.all?{|t| app.tags.include?(t)}
+                  next unless Zim::Config.include_tags.all? { |t| app.tags.include?(t) }
                 end
                 if Zim::Config.exclude_tags.size > 0
-                  next if Zim::Config.exclude_tags.any?{|t| app.tags.include?(t)}
+                  next if Zim::Config.exclude_tags.any? { |t| app.tags.include?(t) }
                 end
+              end
+              if Zim::Config.filters.size > 0
+                matched = true
+                in_app_dir(app.key) do
+                  Zim::Config.filters.each do |t|
+                    `#{t} 2>&1`
+                    matched = false unless $?.exitstatus == 0
+                  end
+                end
+                next unless matched
               end
               if run?(app)
                 puts "Processing #{app.key}" unless Zim::Config.quiet?

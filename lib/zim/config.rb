@@ -59,6 +59,10 @@ module Zim # nodoc
         @exclude_tags ||= []
       end
 
+      def filters
+        @filters ||= []
+      end
+
       def only_modify_changed?
         !!@only_modify_changed
       end
