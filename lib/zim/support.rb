@@ -400,6 +400,11 @@ module Zim # nodoc
       mysystem("git push #{remote}")
     end
 
+    # Diff against a specific branch
+    def git_diff(branch = 'origin/master')
+      mysystem("git diff #{branch}")
+    end
+
     # Reset the index, local filesystem and potentially branch
     def git_reset_branch(branch = '')
       mysystem("git reset --hard #{branch} 2> /dev/null > /dev/null")
@@ -474,6 +479,10 @@ module Zim # nodoc
 
       command(:reset_origin) do
         git_reset_branch('origin/master')
+      end
+
+      command(:diff_origin) do
+        git_diff
       end
 
       command(:goto_master) do
