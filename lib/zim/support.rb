@@ -504,7 +504,8 @@ module Zim # nodoc
         git_pull
       end
 
-      command(:push) do
+      command(:push) do |app|
+        run(:git_reset_if_unchanged, app)
         git_push if Zim.cwd_has_unpushed_changes?
       end
 
