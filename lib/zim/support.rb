@@ -400,6 +400,18 @@ module Zim # nodoc
       mysystem("git push #{remote}")
     end
 
+    # Diff against a specific branch
+    def git_diff(branch = 'origin/master')
+      mysystem("git diff #{branch}")
+    end
+
+    # Reset branch to origin if there is no changes
+    def git_reset_if_unchanged(branch = 'origin/master')
+      if Zim.cwd_has_unpushed_changes? && `git diff #{branch}`.split("\n").size == 0
+        git_reset_branch(branch)
+      end
+    end
+
     # Reset the index, local filesystem and potentially branch
     def git_reset_branch(branch = '')
       mysystem("git reset --hard #{branch} 2> /dev/null > /dev/null")
@@ -476,6 +488,14 @@ module Zim # nodoc
         git_reset_branch('origin/master')
       end
 
+      command(:git_reset_if_unchanged) do
+        git_reset_if_unchanged
+      end
+
+      command(:diff_origin) do
+        git_diff
+      end
+
       command(:goto_master) do
         git_checkout
       end
@@ -484,7 +504,8 @@ module Zim # nodoc
         git_pull
       end
 
-      command(:push) do
+      command(:push) do |app|
+        run(:git_reset_if_unchanged, app)
         git_push if Zim.cwd_has_unpushed_changes?
       end
 
