@@ -12,16 +12,6 @@
 # limitations under the License.
 #
 
-require 'fileutils'
-require 'optparse'
-
-require 'zim/version'
-require 'zim/core'
-require 'zim/command'
-require 'zim/application_definition'
-require 'zim/source_tree_definition'
-require 'zim/repository'
-require 'zim/config'
-require 'zim/driver'
-require 'zim/runtime'
-require 'zim/support'
+module Zim # nodoc
+  VERSION = '0.1.0.dev'
+end
