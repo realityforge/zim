@@ -33,7 +33,8 @@ module Zim # nodoc
     #    rbenv_exec('bundle install')
     #
     def rbenv_exec(command)
-      mysystem("unset RBENV_DIR; unset RBENV_VERSION; unset RBENV_ROOT; unset RBENV_HOOK_PATH; rbenv exec #{command}")
+      envs = %w(GEM_PATH GEM_HOME BUNDLE_BIN_PATH BUNDLE_GEMFILE RBENV_DIR RUBYLIB RBENV_VERSION RBENV_ROOT RBENV_HOOK_PATH RUBYOPT RBENV_SHELL)
+      mysystem("#{envs.collect{|e| "unset #{e}"}.join('; ')}; rbenv exec #{command}")
     end
 
     # Patch a particular file in block, returning updated contents from block
