@@ -565,10 +565,22 @@ module Zim # nodoc
         end
       end
 
+      desc 'Normalize the travis configuration based on buildr_plus rules'
+      command(:normalize_travisci) do |app|
+        if File.exist?('vendor/tools/buildr_plus') && File.exist?('.travis.yml')
+          git_clean_filesystem
+          rbenv_exec('bundle exec buildr travis:fix')
+          git_reset_index
+          git_add_all_files
+          git_commit('Normalize travis configuration', false)
+        end
+      end
+
       desc 'Normalize files using buildr_plus rules'
       command(:normalize_all) do |app|
         run(:normalize_gitignore, app)
         run(:normalize_whitespace, app)
+        run(:normalize_travisci, app)
       end
     end
 
