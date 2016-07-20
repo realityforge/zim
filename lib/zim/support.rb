@@ -587,7 +587,7 @@ module Zim # nodoc
     # add tasks that help get info from the zim system
     def add_standard_info_tasks
       desc 'Perform no action other than print the app name and tags unless quiet'
-      command(:print) do |app|
+      command(:print, :in_app_dir => false) do |app|
         if Zim::Config.quiet?
           puts app
         else
