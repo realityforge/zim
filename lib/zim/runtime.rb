@@ -55,11 +55,15 @@ module Zim
     end
 
     def run?(app)
-      return true unless Zim::Config.only_modify_changed?
+      return true unless Zim::Config.project_select_mode != :all
       Zim.in_base_dir do
         return false unless File.exist?(dir_for_app(app.key))
         in_app_dir(app.key) do
-          return Zim.cwd_has_unpushed_changes?
+          if Zim::Config.only_modify_unchanged?
+            return !Zim.cwd_has_unpushed_changes?
+          elsif Zim::Config.only_modify_changed?
+            return Zim.cwd_has_unpushed_changes?
+          end
         end
       end
     end

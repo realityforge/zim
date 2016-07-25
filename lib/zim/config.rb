@@ -64,11 +64,28 @@ module Zim # nodoc
       end
 
       def only_modify_changed?
-        !!@only_modify_changed
+        self.project_select_mode == :changed
       end
 
-      def only_modify_changed=(only_modify_changed)
-        @only_modify_changed = only_modify_changed
+      def only_modify_changed!
+        self.project_select_mode = :changed
+      end
+
+      def only_modify_unchanged?
+        self.project_select_mode == :unchanged
+      end
+
+      def only_modify_unchanged!
+        self.project_select_mode = :unchanged
+      end
+
+      def project_select_mode
+        @project_select_mode || :all
+      end
+
+      def project_select_mode=(project_select_mode)
+        raise "Unknown project_select_mode #{project_select_mode}" unless [:all, :changed, :unchanged].include?(project_select_mode)
+        @project_select_mode = project_select_mode
       end
     end
   end

@@ -39,7 +39,11 @@ module Zim # nodoc
           end
 
           opts.on('-c', '--changed', 'Only run commands if source tree is already modified.') do
-            Zim::Config.only_modify_changed = true
+            Zim::Config.only_modify_changed!
+          end
+
+          opts.on('-u', '--unchanged', 'Only run commands if source tree is not modified.') do
+            Zim::Config.only_modify_unchanged!
           end
 
           opts.on('-v', '--verbose', 'More verbose logging') do
