@@ -592,6 +592,7 @@ module Zim # nodoc
         run(:normalize_gitignore, app)
         run(:normalize_whitespace, app)
         run(:normalize_travisci, app)
+        run(:normalize_jenkins, app)
       end
     end
 
