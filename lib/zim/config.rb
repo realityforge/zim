@@ -43,6 +43,10 @@ module Zim # nodoc
         @log_level || :info
       end
 
+      def info?
+        self.log_level == :info
+      end
+
       def verbose?
         self.log_level == :verbose
       end
