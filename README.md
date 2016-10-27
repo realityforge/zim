@@ -49,8 +49,8 @@ can pass the option `-c` that will only run commands if the source tree already 
 
 ## Custom commands
 
-You can also write your own commands to apply changes over multiple repositories. Add your commands to the zim file
-in the Zim project directory.
+You can also write your own commands to apply changes over multiple repositories. Add your commands to the
+`./zim_config.rb` file in the Zim project directory.
 
 You can then chain together base and custom commands:
 
