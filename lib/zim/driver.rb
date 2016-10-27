@@ -58,6 +58,10 @@ module Zim # nodoc
             Zim::Config.log_level = :quiet
           end
 
+          opts.on('-k', '--no-remove-unknown', 'D not remove unknown directories in source tree') do
+            Zim::Config.keep_unknown = true
+          end
+
           opts.on('-i', '--include TAG', 'Specify application tags that must appear when selecting applications') do |tag|
             Zim::Config.include_tags << tag
           end
@@ -109,9 +113,12 @@ module Zim # nodoc
 
         FileUtils.mkdir_p Zim::Config.source_tree_directory
 
+        expected_dirs = []
+
         skip_apps = !Zim::Config.first_app.nil?
         Zim.context do
           Zim.repository.current_source_tree.applications.each do |app|
+            expected_dirs << Zim.dir_for_app(app.key)
             skip_apps = false if !Zim::Config.first_app.nil? && Zim::Config.first_app == app.key
             if skip_apps
               puts "Skipping #{app.key}" if Zim::Config.verbose?
@@ -146,6 +153,23 @@ module Zim # nodoc
                     end
                   end
                 end
+              end
+            end
+          end
+
+          unless Zim::Config.keep_unknown?
+            actual_dirs = Dir["#{Zim::Config.source_tree_directory}/*"]
+            unknown_dirs = (actual_dirs - expected_dirs)
+            unless unknown_dirs.empty?
+              unless Zim::Config.quiet?
+                puts 'Removing unknown files/directories in source tree:'
+                puts unknown_dirs.collect { |d| "  * #{File.basename(d)}" }.join("\n")
+                puts "\n\n"
+              end
+              unknown_dirs.each do |d|
+                puts "Removing #{File.basename(d)}." unless Zim::Config.quiet?
+                FileUtils.rm_rf(d)
+                puts "Remove completed for #{File.basename(d)}." unless Zim::Config.quiet?
               end
             end
           end

@@ -43,6 +43,12 @@ module Zim # nodoc
         @log_level || :info
       end
 
+      def keep_unknown?
+        @keep_unknown.nil? ? false : !!@keep_unknown
+      end
+
+      attr_writer :keep_unknown
+
       def info?
         self.log_level == :info
       end
