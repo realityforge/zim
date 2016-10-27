@@ -445,6 +445,48 @@ module Zim # nodoc
       end
     end
 
+    # Historic approach to whitespace cleanup
+    def ensure_clean_whitespace
+      git_clean_filesystem
+
+      # normalize_whitespace has already cleaned up whitespace if buildr_plus present
+      unless File.exist?('vendor/tools/buildr_plus')
+        extensions = %w(jsp sass scss xsl sql haml less rake xml html gemspec properties yml yaml css rb java xhtml rdoc txt erb gitattributes gitignore xsd textile md wsdl)
+        full_filenames = %w(rakefile Rakefile buildfile Buildfile Gemfile LICENSE)
+
+        files_to_dedupe_nl = Dir['etc/checkstyle/*.xml'].flatten + Dir['tasks/*.rake'].flatten + Dir['doc/*.md'].flatten + Dir['*.md'].flatten + Dir['config/*.sh'].flatten + %w(buildfile Gemfile README.md)
+
+        files = full_filenames.collect { |file| Dir["**/#{file}"] }.flatten + extensions.collect { |extension| Dir["**/*.#{extension}"] + Dir["**/.#{extension}"] }.flatten
+
+        files.each do |f|
+          next if /^vendor\/.*/ =~ f
+          content = File.read(f)
+          original_content = content.dup
+          begin
+            puts "Fixing DOS EOL: #{f}" if content.gsub!(/\r\n/, "\n")
+            puts "Fixing Trailing whitespace: #{f}" if content.gsub!(/[ \t]+\n/, "\n")
+            puts "Fixing Double lines: #{f}" if content.gsub!(/\n\n\n/, "\n\n") if files_to_dedupe_nl.include?(f)
+            content.gsub!(/[ \r\t\n]+\Z/, '')
+            content += "\n"
+          rescue
+            puts "Skipping whitespace cleanup: #{f}"
+          end
+          if content != original_content
+            puts "Fixing: #{f}"
+            File.open(f, 'wb') do |out|
+              out.write content
+            end
+          end
+        end
+      end
+
+      git_reset_index
+      git_add_all_files
+      if git_commit('Cleanup whitespace at EOL and EOF.', false)
+        puts "Whitespace cleaned up in #{app}"
+      end
+    end
+
     # Add standard set of commands for interacting with git
     # repositories that applicable to all users of zim
     def add_standard_git_tasks
