@@ -446,7 +446,7 @@ module Zim # nodoc
     end
 
     # Historic approach to whitespace cleanup
-    def ensure_clean_whitespace
+    def clean_whitespace(app)
       git_clean_filesystem
 
       # normalize_whitespace has already cleaned up whitespace if buildr_plus present
