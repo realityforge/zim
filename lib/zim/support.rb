@@ -228,6 +228,46 @@ module Zim # nodoc
     end
 
     # Add a command that updates the version of a dependency family
+    # in projects (assuming all dependencies are in build.yaml). This
+    # method assumes the standard set of artifacts that are usually shared
+    # between projects.
+    #
+    # e.g. Updating all the acal dependencies
+    #
+    #    standard_dependency(:acal, 'iris.acal', 'acal', '1.4.0')
+    #
+    def standard_dependency(code, group, base_artifact, target_version, options = {})
+      artifacts = []
+
+      options = options.dup
+
+      standard_suffixes = %w(
+        shared:jar
+        model:jar model-qa-support:jar
+        replicant:jar replicant-qa-support:jar
+        gwt:jar gwt-qa-support:jar
+        server:war
+        server:jar server-qa-support:jar
+        db:jar
+        integration-qa-support:jar
+        sync_model:jar
+        soap-client:jar soap-qa-support:jar
+      )
+
+      %W(#{group} #{group}.pg).each do |g|
+        ((options[:additional_artifacts] || []) + %W(domains-#{base_artifact}:json) + standard_suffixes).
+          each do |artifact_suffix|
+          artifacts << "#{g}:#{base_artifact}-#{artifact_suffix}"
+        end
+      end
+
+      desc "Update the #{code} dependencies in build.yaml"
+      command(:"patch_#{code}_dep") do |app|
+        patch_versions(app, artifacts, target_version, options)
+      end
+    end
+
+    # Add a command that updates the version of a dependency family
     # in projects (assuming all dependencies are in build.yaml)
     #
     # e.g. Updating a dependency with a single coordinate
