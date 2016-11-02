@@ -625,6 +625,17 @@ module Zim # nodoc
 
     # Add standard set of commands for interacting with buildr when buildr_plus is present
     def add_standard_buildr_plus_tasks
+      desc 'Normalize the gitattributes file based on buildr_plus rules'
+      command(:normalize_gitattributes) do |app|
+        if File.exist?('vendor/tools/buildr_plus')
+          git_clean_filesystem
+          rbenv_exec('bundle exec buildr gitattributes:fix')
+          git_reset_index
+          git_add_all_files
+          git_commit('Normalize .gitattributes', false)
+        end
+      end
+
       desc 'Normalize the gitignore file based on buildr_plus rules'
       command(:normalize_gitignore) do |app|
         if File.exist?('vendor/tools/buildr_plus')
@@ -671,6 +682,7 @@ module Zim # nodoc
 
       desc 'Normalize files using buildr_plus rules'
       command(:normalize_all) do |app|
+        run(:normalize_gitattributes, app)
         run(:normalize_gitignore, app)
         run(:normalize_whitespace, app)
         run(:normalize_travisci, app)
