@@ -611,6 +611,7 @@ module Zim # nodoc
 
     # Add standard set of commands for interacting with buildr
     def add_standard_buildr_tasks
+      add_standard_bundler_tasks
       desc 'Download all artifacts application if buildfile'
       command(:buildr_artifacts) do
         if File.exist?('buildfile')
@@ -625,6 +626,8 @@ module Zim # nodoc
 
     # Add standard set of commands for interacting with buildr when buildr_plus is present
     def add_standard_buildr_plus_tasks
+      add_standard_buildr_tasks
+
       desc 'Normalize the gitattributes file based on buildr_plus rules'
       command(:normalize_gitattributes) do |app|
         if File.exist?('vendor/tools/buildr_plus')
