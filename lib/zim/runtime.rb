@@ -47,6 +47,11 @@ module Zim
       @next_description = description
     end
 
+    # Return true if command defined?
+    def command?(key)
+      !!COMMANDS[key.to_s]
+    end
+
     def command(key, options = {:in_app_dir => true}, &block)
       raise "Attempting to define duplicate command #{key}" if COMMANDS[key.to_s]
       description = @next_description
