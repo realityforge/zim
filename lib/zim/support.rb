@@ -196,6 +196,23 @@ module Zim # nodoc
       end
     end
 
+    # Add a task to patch the .ruby-version file from a version to a version.
+    # e.g.
+    #
+    #    ruby_update('2.1.3', '2.3.1')
+    #
+    def ruby_update(from_version, to_version)
+      desc "Update the ruby version from #{from_version} to #{to_version}"
+      command(:"patch_ruby_version_#{from_version}") do |app|
+        patched = patch_file('.ruby-version') do |content|
+          content.gsub(from_version, to_version)
+        end
+        if patched
+          mysystem("git commit -m \"Update the ruby version from #{from_version} to #{to_version}\"")
+        end
+      end
+    end
+
     # Execute braid update on path if the path is present.
     # This command assumes rbenv context with braid installed.
     # e.g.
