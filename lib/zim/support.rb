@@ -213,6 +213,26 @@ module Zim # nodoc
       end
     end
 
+    # Add tasks that upgrade ruby and runs required tasks to patch config files.
+    # e.g.
+    #
+    #    ruby_upgrade('2.1.3', '2.3.1')
+    #
+    def ruby_upgrade(from_version, to_version)
+      ruby_update(from_version, to_version)
+
+      desc "Upgrade the ruby version from #{from_version} to #{to_version}, regenerating config files."
+      command(:"upgrade_ruby_version_#{from_version}") do |app|
+        run(:"patch_ruby_version_#{from_version}", app)
+
+        if Zim.cwd_has_unpushed_changes?
+          run(:bundle_install, app) if Zim.command?(:bundle_install)
+          run(:normalize_jenkins, app) if Zim.command?(:normalize_jenkins)
+          run(:normalize_travisci, app) if Zim.command?(:normalize_jenkins)
+        end
+      end
+    end
+
     # Execute braid update on path if the path is present.
     # This command assumes rbenv context with braid installed.
     # e.g.
