@@ -182,7 +182,7 @@ module Zim # nodoc
       false
     end
 
-    # Patch the gem  specified in Gemfile from a version to a version.
+    # Add a task to patch the gem specified in Gemfile from a version to a version.
     # e.g.
     #
     #    patch_gem('buildr', '1.4.20', '1.4.22')
