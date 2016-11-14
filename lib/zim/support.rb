@@ -448,6 +448,10 @@ module Zim # nodoc
       end
     end
 
+    def git_current_branch
+      `git rev-parse --abbrev-ref HEAD`.strip
+    end
+
     # Commit changed files with specified message. Swallow error if fail_on_error is true
     def git_commit(message, fail_on_error = true)
       begin
