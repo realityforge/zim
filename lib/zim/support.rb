@@ -633,11 +633,19 @@ module Zim # nodoc
         git_push if Zim.cwd_has_unpushed_changes?
       end
 
+      command(:remove_local_branches) do |app|
+        git_local_branch_list.select { |b| b != 'master' }.each do |branch|
+          puts "Removing local branch #{branch} from #{app}"
+          mysystem("git branch -D #{branch}")
+        end
+      end
+
       command(:clean, :in_app_dir => false) do |app|
         run(:clone, app)
         run(:fetch, app)
         run(:reset, app)
         run(:goto_master, app)
+        run(:remove_local_branches, app)
         run(:pull, app)
       end
     end
