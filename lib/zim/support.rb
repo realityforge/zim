@@ -478,6 +478,10 @@ module Zim # nodoc
       mysystem("git push #{remote}")
     end
 
+    def git_local_branch_list
+      `git branch`.gsub('* ','').split("\n").collect{|s|s.strip}
+    end
+
     # Diff against a specific branch
     def git_diff(branch = 'origin/master')
       mysystem("git diff #{branch}")
