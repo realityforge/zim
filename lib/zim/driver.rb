@@ -38,6 +38,17 @@ module Zim # nodoc
             Zim::Config.first_app = app_key
           end
 
+          opts.on('-p PARAMETER', '--parameter PARAMETER', 'Arbitrary parameters that can be used by commands') do |parameter|
+            index = parameter.index('=')
+            if index.nil?
+              puts "Parameter '#{parameter}' can not be split with = character. Make sure it is of the form key=value"
+              exit
+            end
+            key = parameter[0, index]
+            value = parameter[index + 1, parameter.size]
+            Zim::Config.parameters[key] = value
+          end
+
           opts.on('-c', '--changed', 'Only run commands if source tree is already modified.') do
             Zim::Config.only_modify_changed!
           end

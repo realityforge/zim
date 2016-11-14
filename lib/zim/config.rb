@@ -21,6 +21,16 @@ module Zim # nodoc
     @log_level = nil
 
     class << self
+      def parameters
+        @parameters ||= {}
+      end
+
+      def parameter_by_name(name)
+        value = parameters[name.to_s]
+        raise "Unable to locate parameter named '#{name}'" unless value
+        value
+      end
+
       attr_accessor :first_app
 
       attr_writer :base_directory
