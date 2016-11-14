@@ -653,6 +653,10 @@ module Zim # nodoc
         run(:pull, app)
       end
 
+      command(:branch) do |app|
+        git_checkout(Zim::Config.parameter_by_name('BRANCH'), true)
+      end
+
       command(:real_clean, :in_app_dir => false) do |app|
         run(:clean, app)
         run(:reset_origin, app)
