@@ -20,11 +20,22 @@ module Zim # nodoc
 
     # Return true if the current working directory has no changes that are not pushed
     def cwd_has_unpushed_changes?
-      cwd_has_changes?('origin/master', 'master')
+      branch = git_current_branch
+      # If there is no target branch to merge to then changes need to be pushed
+      if git_has_remote_branch?(branch)
+        changes_between_refs?('origin/master', branch)
+      else
+        changes_between_refs?("origin/#{branch}", branch)
+      end
     end
 
-    def cwd_has_changes?(from_branch, to_branch)
-      `git log #{from_branch}..#{to_branch}`.split.select { |l| l.size != 0 }.size > 0
+    # Return true if the specified branch has a remote branch
+    def git_has_remote_branch?(branch)
+      `git config branch.#{branch}.merge`.strip == ''
+    end
+
+    def changes_between_refs?(from_branch, to_branch)
+      `git log #{from_branch}..#{to_branch} 2>&1`.split.select { |l| l.size != 0 }.size > 0
     end
 
     # Execute a ruby command within the context of rbenv environment.
@@ -492,8 +503,8 @@ module Zim # nodoc
     end
 
     # Reset branch to origin if there is no changes
-    def git_reset_if_unchanged(branch = 'origin/master')
-      if Zim.cwd_has_unpushed_changes? && `git diff #{branch}`.split("\n").size == 0
+    def git_reset_if_unchanged(branch = "origin/#{git_current_branch}")
+      if git_has_remote_branch?(branch) && Zim.cwd_has_unpushed_changes? && `git diff #{branch} 2>&1`.split("\n").size == 0
         git_reset_branch(branch)
       end
     end
