@@ -479,7 +479,7 @@ module Zim # nodoc
 
     # Push to specified remote or origin if unspecified
     def git_push(remote = 'origin')
-      mysystem("git push #{remote}")
+      mysystem("git push --set-upstream #{remote} #{git_current_branch}")
     end
 
     def git_local_branch_list
