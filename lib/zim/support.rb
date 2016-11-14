@@ -648,6 +648,11 @@ module Zim # nodoc
         run(:remove_local_branches, app)
         run(:pull, app)
       end
+
+      command(:real_clean, :in_app_dir => false) do |app|
+        run(:clean, app)
+        run(:reset_origin, app)
+      end
     end
 
     # Add standard set of commands for interacting with bundler
