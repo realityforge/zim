@@ -727,7 +727,7 @@ module Zim # nodoc
       command(:normalize_whitespace) do |app|
         if File.exist?('vendor/tools/buildr_plus')
           git_clean_filesystem
-          rbenv_exec('bundle exec buildr ws:fix')
+          rbenv_exec('bundle exec buildr whitespace:fix')
           git_reset_index
           git_add_all_files
           git_commit('Normalize whitespace', false)
