@@ -292,7 +292,7 @@ module Zim # nodoc
       standard_suffixes = %w(
         shared:jar
         model:jar model-qa-support:jar
-        replicant:jar replicant-qa-support:jar
+        replicant-shared:jar replicant-qa-support:jar
         gwt:jar gwt-qa-support:jar
         server:war
         server:jar server-qa-support:jar
