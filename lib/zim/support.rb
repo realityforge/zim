@@ -650,7 +650,6 @@ module Zim # nodoc
 
       command(:remove_local_branches) do |app|
         git_local_branch_list.select { |b| b != 'master' }.each do |branch|
-          puts "Removing local branch #{branch} from #{app}"
           mysystem("git branch -D #{branch}")
         end
       end
