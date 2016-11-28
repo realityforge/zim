@@ -590,6 +590,22 @@ module Zim # nodoc
       end
     end
 
+    # Helper method that updates a dependency in an automerge branch
+    def propose_dependency_update(app, dependencies, target_version)
+      dependency_name = dependencies.collect{|s|s.gsub(/\:.*/, '')}.sort {|a,b| a.length <=> b.length }[0]
+      branch_name = "AM_update_#{dependency_name}"
+      merge_origin = git_local_branch_list.include?(branch_name)
+      git_checkout(branch_name, true)
+      git_merge('origin/master') if merge_origin
+
+      if patch_versions(app, dependencies, target_version)
+        git_push
+      else
+        git_checkout('master')
+        mysystem("git branch -D #{branch_name} 2> /dev/null 1> /dev/null")
+      end
+    end
+
     # Add standard set of commands for interacting with git
     # repositories that applicable to all users of zim
     def add_standard_git_tasks
@@ -699,6 +715,17 @@ module Zim # nodoc
           rescue
             # ignored
           end
+        end
+      end
+
+      desc 'Propose an update to dependency for all downstream projects in a automerge branch. Specify parameters DEPENDENCIES and VERSION'
+      command(:propose_dependency_update, :in_app_dir => false) do |app|
+        dependencies = Zim::Config.parameter_by_name('DEPENDENCIES').split(',')
+        target_version = Zim::Config.parameter_by_name('VERSION')
+
+        run(:real_clean, app)
+        in_app_dir(app) do
+          propose_dependency_update(app, dependencies, target_version)
         end
       end
     end
