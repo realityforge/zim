@@ -101,6 +101,8 @@ module Zim # nodoc
         mysystem("git commit -m \"Update the #{name} dependency.\"")
         puts "Update the #{name} dependency in #{app}"
       end
+
+      patched
     end
 
     def patch_dependencies_in_file(filename, dependencies, source_versions, target_version)
