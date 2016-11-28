@@ -502,6 +502,11 @@ module Zim # nodoc
       mysystem("git diff #{branch}")
     end
 
+    # Merge in specified branch
+    def git_merge(branch = 'origin/master')
+      mysystem("git merge #{branch}")
+    end
+
     # Reset branch to origin if there is no changes
     def git_reset_if_unchanged(branch = "origin/#{git_current_branch}")
       if git_has_remote_branch?(branch) && Zim.cwd_has_unpushed_changes? && `git diff #{branch} 2>&1`.split("\n").size == 0
