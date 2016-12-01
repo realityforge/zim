@@ -14,7 +14,7 @@
 
 module Zim # nodoc
 
-  class SourceTreeDefinition < BaseElement
+  class SourceTreeDefinition < Reality.base_element(:key => true)
     attr_reader :repository
     attr_accessor :base_git_url
 

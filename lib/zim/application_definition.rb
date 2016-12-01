@@ -14,7 +14,7 @@
 
 module Zim # nodoc
 
-  class ApplicationDefinition < BaseElement
+  class ApplicationDefinition < Reality.base_element(:key => true)
     attr_reader :source_tree
 
     def initialize(source_tree, key, options, &block)

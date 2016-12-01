@@ -14,7 +14,7 @@
 
 module Zim # nodoc
   # Class used to represent commands within zim
-  class Command < BaseElement
+  class Command < Reality.base_element(:key => true)
     attr_accessor :description
     attr_accessor :action
 
