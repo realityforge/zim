@@ -90,7 +90,7 @@ module Zim # nodoc
       dependencies = dependencies.is_a?(Array) ? dependencies : [dependencies]
       source_versions = options[:source_versions]
       skip_apps = options[:skip_apps] || []
-      name = options[:name] || dependencies[0].gsub(/\:.*/, '')
+      name = options[:name] || get_shortest_group_name(dependencies)
 
       return if skip_apps.include?(app)
 
@@ -592,7 +592,7 @@ module Zim # nodoc
 
     # Helper method that updates a dependency in an automerge branch
     def propose_dependency_update(app, dependencies, target_version)
-      dependency_name = dependencies.collect{|s|s.gsub(/\:.*/, '')}.sort {|a,b| a.length <=> b.length }[0]
+      dependency_name = get_shortest_group_name(dependencies)
       branch_name = "AM_update_#{dependency_name}"
       merge_origin = git_local_branch_list.include?(branch_name)
       git_checkout(branch_name, true)
@@ -604,6 +604,11 @@ module Zim # nodoc
         git_checkout('master')
         mysystem("git branch -D #{branch_name} 2> /dev/null 1> /dev/null")
       end
+    end
+
+    # Scan dependencies and find group part of spec that is shortest
+    def get_shortest_group_name(dependencies)
+      dependencies.collect { |s| s.gsub(/\:.*/, '') }.sort { |a, b| a.length <=> b.length }[0]
     end
 
     # Add standard set of commands for interacting with git
