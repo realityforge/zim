@@ -26,12 +26,12 @@ module Zim # nodoc
         require customization_file if File.exist?(customization_file)
 
         optparse = OptionParser.new do |opts|
-          opts.on('-s', '--source-tree-set SOURCE_TREE_SET', 'Specify the set of projects to process') do |source_tree_key|
-            unless Zim.repository.source_tree_exists?(source_tree_key)
-              puts "Bad source tree set #{source_tree_key} specified. Specify one of:\n#{Zim.repository.source_trees.collect { |c| "  * #{c.key}" }.join("\n")}"
+          opts.on('-s', '--suite SUITE', 'Specify the suite of applications to process') do |suite_key|
+            unless Zim.suite_by_name?(suite_key)
+              puts "Bad suite set #{suite_key} specified. Specify one of:\n#{Zim.suite_keys.collect { |c| "  * #{c}" }.join("\n")}"
               exit
             end
-            Zim.repository.current_source_tree_key = source_tree_key
+            Zim.current_suite = Zim.suite_by_name(suite_key)
           end
 
           opts.on('--first-app APP_NAME', 'The first app to process actions for') do |app_key|
@@ -49,11 +49,11 @@ module Zim # nodoc
             Zim::Config.parameters[key] = value
           end
 
-          opts.on('-c', '--changed', 'Only run commands if source tree is already modified.') do
+          opts.on('-c', '--changed', 'Only run commands if application is already modified.') do
             Zim::Config.only_modify_changed!
           end
 
-          opts.on('-u', '--unchanged', 'Only run commands if source tree is not modified.') do
+          opts.on('-u', '--unchanged', 'Only run commands if application is not modified.') do
             Zim::Config.only_modify_unchanged!
           end
 
@@ -61,7 +61,7 @@ module Zim # nodoc
             Zim::Config.log_level = :verbose
           end
 
-          opts.on('-d', '--base-directory DIR', 'Base directory in which source trees are stored') do |dir|
+          opts.on('-d', '--base-directory DIR', 'Base directory in which source for applications is stored') do |dir|
             Zim::Config.base_directory = dir
           end
 
@@ -69,7 +69,7 @@ module Zim # nodoc
             Zim::Config.log_level = :quiet
           end
 
-          opts.on('-k', '--no-remove-unknown', 'D not remove unknown directories in source tree') do
+          opts.on('-k', '--no-remove-unknown', 'Do not remove unknown directories in in source directory') do
             Zim::Config.keep_unknown = true
           end
 
@@ -81,7 +81,7 @@ module Zim # nodoc
             Zim::Config.exclude_tags << tag
           end
 
-          opts.on('-f', '--filter CMD', 'Specify command that must return success to include project') do |filter|
+          opts.on('-f', '--filter CMD', 'Specify command that must return success to include application') do |filter|
             Zim::Config.filters << filter
           end
 
@@ -101,38 +101,38 @@ module Zim # nodoc
         end
 
         if 0 == args.size
-          puts "No commands specified. Specify one of:\n#{Zim::COMMANDS.keys.sort.collect { |c| "  * #{Zim::COMMANDS[c].help_text}" }.join("\n")}"
+          puts "No commands specified. Specify one of:\n#{Zim.commands.sort.collect { |c| "  * #{c.help_text}" }.join("\n")}"
           exit
         end
 
-        unless Zim.repository.current_source_tree?
-          puts 'No source tree set. Set one by passing parameters: -s SET'
+        unless Zim.current_suite?
+          puts 'No suite set. Set one by passing parameters: -s SET'
           exit
         end
 
         args.each do |command|
-          unless Zim::COMMANDS[command]
+          unless Zim.command_by_name?(command)
             puts "Unknown command specified: #{command}"
             exit
           end
         end
 
         if Zim::Config.verbose?
-          puts "Source Tree Directory: #{Zim::Config.source_tree_directory}"
+          puts "Application Suite: #{Zim::Config.suite_directory}"
           puts "Commands specified: #{args.collect { |c| c.to_s }.join(', ')}"
         end
 
-        FileUtils.mkdir_p Zim::Config.source_tree_directory
+        FileUtils.mkdir_p Zim::Config.suite_directory
 
         expected_dirs = []
 
         skip_apps = !Zim::Config.first_app.nil?
         Zim.context do
-          Zim.repository.current_source_tree.applications.each do |app|
-            expected_dirs << Zim.dir_for_app(app.key)
-            skip_apps = false if !Zim::Config.first_app.nil? && Zim::Config.first_app == app.key
+          Zim.current_suite.applications.each do |app|
+            expected_dirs << Zim.dir_for_app(app.name)
+            skip_apps = false if !Zim::Config.first_app.nil? && Zim::Config.first_app == app.name
             if skip_apps
-              puts "Skipping #{app.key}" if Zim::Config.verbose?
+              puts "Skipping #{app.name}" if Zim::Config.verbose?
             else
               if Zim::Config.include_tags.size > 0 || Zim::Config.exclude_tags.size > 0
                 if Zim::Config.include_tags.size > 0
@@ -144,7 +144,7 @@ module Zim # nodoc
               end
               if Zim::Config.filters.size > 0
                 matched = true
-                in_app_dir(app.key) do
+                in_app_dir(app.name) do
                   Zim::Config.filters.each do |t|
                     `#{t} 2>&1`
                     matched = false unless $?.exitstatus == 0
@@ -153,13 +153,13 @@ module Zim # nodoc
                 next unless matched
               end
               if run?(app)
-                puts "Processing #{app.key}" unless Zim::Config.quiet?
+                puts "Processing #{app.name}" unless Zim::Config.quiet?
                 in_base_dir do
                   args.each do |key|
                     begin
-                      run(key, app.key)
+                      run(key, app.name)
                     rescue Exception => e
-                      Zim::Driver.print_command_error(app.key, initial_args, "Error processing stage #{key} on application '#{app.key}'.")
+                      Zim::Driver.print_command_error(app.name, initial_args, "Error processing stage #{key} on application '#{app.key}'.")
                       raise e
                     end
                   end
@@ -169,11 +169,11 @@ module Zim # nodoc
           end
 
           unless Zim::Config.keep_unknown?
-            actual_dirs = Dir["#{Zim::Config.source_tree_directory}/*"]
+            actual_dirs = Dir["#{Zim::Config.suite_directory}/*"]
             unknown_dirs = (actual_dirs - expected_dirs)
             unless unknown_dirs.empty?
               unless Zim::Config.quiet?
-                puts 'Removing unknown files/directories in source tree:'
+                puts 'Removing unknown files/directories in source directory:'
                 puts unknown_dirs.collect { |d| "  * #{File.basename(d)}" }.join("\n")
                 puts "\n\n"
               end

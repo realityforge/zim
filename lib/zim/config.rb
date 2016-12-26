@@ -39,8 +39,8 @@ module Zim # nodoc
         @base_directory || (raise 'Base directory undefined')
       end
 
-      def source_tree_directory
-        "#{base_directory}/#{Zim.repository.current_source_tree.directory}"
+      def suite_directory
+        "#{base_directory}/#{Zim.current_suite.directory}"
       end
 
       def log_level=(log_level)

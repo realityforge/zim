@@ -17,5 +17,39 @@ module Zim # nodoc
     def context(&block)
       self.instance_eval &block
     end
+
+    def current_suite?
+      !get_current_suite.nil?
+    end
+
+    attr_writer :current_suite
+
+    def current_suite
+      current_suite = get_current_suite
+      Zim.error('current_suite invoke but no suite specified.') if current_suite.nil?
+      current_suite
+    end
+
+    # Set the description for the next command defined
+    def desc(description)
+      @next_description = description
+    end
+
+    # Retrieve and clear the description for the next command
+    def pop_description
+      description = @next_description
+      @next_description = nil
+      description
+    end
+
+    private
+
+    def get_current_suite
+      if @current_suite.nil? && 1 == Zim.suites.size
+        # Set default suite if only one suite defined
+        @current_suite = Zim.suites.first
+      end
+      @current_suite
+    end
   end
 end

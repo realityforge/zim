@@ -13,13 +13,7 @@
 #
 
 module Zim
-  COMMANDS = {}
-
   class << self
-
-    def repository
-      @repository ||= Repository.new
-    end
 
     # Run system command and raise an exception if it returns a non-zero exit status
     def mysystem(command)
@@ -40,23 +34,7 @@ module Zim
 
     # change to the base directory before evaluating block
     def in_base_dir(&block)
-      in_dir(Zim::Config.source_tree_directory, &block)
-    end
-
-    def desc(description)
-      @next_description = description
-    end
-
-    # Return true if command defined?
-    def command?(key)
-      !!COMMANDS[key.to_s]
-    end
-
-    def command(key, options = {:in_app_dir => true}, &block)
-      raise "Attempting to define duplicate command #{key}" if COMMANDS[key.to_s]
-      description = @next_description
-      @next_description = nil
-      COMMANDS[key.to_s] = Command.new(key, options.merge(:action => block, :description => description))
+      in_dir(Zim::Config.suite_directory, &block)
     end
 
     def run?(app)
@@ -79,11 +57,11 @@ module Zim
     end
 
     def dir_for_app(app)
-      "#{Zim::Config.source_tree_directory}/#{File.basename(app)}"
+      "#{Zim::Config.suite_directory}/#{File.basename(app)}"
     end
 
     def run(key, app)
-      command = COMMANDS[key.to_s]
+      command = Zim.command_by_name(key)
       raise "Unknown command specified: #{key}" unless command
       puts "Processing #{command.key} on #{app}" if Zim::Config.verbose?
       command.run(app)

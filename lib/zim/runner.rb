@@ -25,8 +25,4 @@ Zim.context do
   end
 end
 
-# Set default source tree if only one tree
-source_trees = Zim.repository.source_trees
-Zim.repository.current_source_tree_key = source_trees.first.name if source_trees.size == 1
-
 Zim::Driver.process(ARGV)

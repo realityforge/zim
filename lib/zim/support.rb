@@ -239,9 +239,9 @@ module Zim # nodoc
         run(:"patch_ruby_version_#{from_version}", app)
 
         if Zim.cwd_has_unpushed_changes?
-          run(:bundle_install, app) if Zim.command?(:bundle_install)
-          run(:normalize_jenkins, app) if Zim.command?(:normalize_jenkins)
-          run(:normalize_travisci, app) if Zim.command?(:normalize_jenkins)
+          run(:bundle_install, app) if Zim.command_by_name?(:bundle_install)
+          run(:normalize_jenkins, app) if Zim.command_by_name?(:normalize_jenkins)
+          run(:normalize_travisci, app) if Zim.command_by_name?(:normalize_jenkins)
         end
       end
     end
@@ -615,7 +615,7 @@ module Zim # nodoc
     # repositories that applicable to all users of zim
     def add_standard_git_tasks
       command(:clone, :in_app_dir => false) do |app|
-        url = Zim.repository.current_source_tree.application_by_name(app).git_url
+        url = Zim.current_suite.application_by_name(app).git_url
 
         directory_exists = File.directory?(dir_for_app(app))
 
@@ -823,7 +823,7 @@ module Zim # nodoc
         if Zim::Config.quiet?
           puts app
         else
-          puts "#{app}: #{Zim.repository.current_source_tree.application_by_name(app).tags.inspect}"
+          puts "#{app}: #{Zim.current_suite.application_by_name(app).tags.inspect}"
         end
       end
     end
