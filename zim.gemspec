@@ -1,10 +1,8 @@
 # -*- encoding: utf-8 -*-
-$:.push File.expand_path('../lib', __FILE__)
-require 'zim/version'
 
 Gem::Specification.new do |s|
   s.name               = %q{zim}
-  s.version            = Zim::VERSION
+  s.version            = '0.1.0.dev'
   s.platform           = Gem::Platform::RUBY
 
   s.authors            = ['Peter Donald']

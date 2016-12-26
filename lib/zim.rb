@@ -17,7 +17,6 @@ require 'optparse'
 
 require 'reality/base_element'
 
-require 'zim/version'
 require 'zim/core'
 require 'zim/command'
 require 'zim/application_definition'
