@@ -24,5 +24,5 @@ Gem::Specification.new do |s|
   s.has_rdoc           = false
   s.rdoc_options       = %w(--line-numbers --inline-source --title zim)
 
-  s.add_dependency 'reality-core', '= 1.4.0'
+  s.add_dependency 'reality-core', '>= 1.7.0'
 end
