@@ -31,10 +31,10 @@ module Zim # nodoc
     attr_accessor :action
 
     def initialize(name, options = {}, &block)
-        options = options.dup
-        options[:in_app_dir] = true if options[:in_app_dir].nil?
-        options[:description] = Zim.pop_description
-        options[:action] = block
+      options = options.dup
+      options[:in_app_dir] = true if options[:in_app_dir].nil?
+      options[:description] = Zim.pop_description
+      options[:action] = block
 
       perform_init(name, options)
     end
