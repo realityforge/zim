@@ -36,8 +36,7 @@ module Zim # nodoc
         options[:description] = Zim.pop_description
         options[:action] = block
 
-        perform_init(name, options) do
-        end
+      perform_init(name, options)
     end
 
     def help_text
