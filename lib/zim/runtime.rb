@@ -60,10 +60,10 @@ module Zim
       "#{Zim::Config.suite_directory}/#{File.basename(app)}"
     end
 
-    def run(key, app)
-      command = Zim.command_by_name(key)
-      raise "Unknown command specified: #{key}" unless command
-      puts "Processing #{command.key} on #{app}" if Zim::Config.verbose?
+    def run(name, app)
+      command = Zim.command_by_name(name)
+      raise "Unknown command specified: #{name}" unless command
+      puts "Processing #{command.name} on #{app}" if Zim::Config.verbose?
       command.run(app)
     end
   end
