@@ -48,6 +48,15 @@ module Zim # nodoc
       mysystem("#{envs.collect { |e| "unset #{e}" }.join('; ')}; rbenv exec #{command}")
     end
 
+    # Execute a ruby command within the context of bundle environment.
+    # e.g.
+    #
+    #    bundle_exec('buildr compile')
+    #
+    def bundle_exec(command)
+      rbenv_exec("bundle exec #{command}")
+    end
+
     # Patch a particular file in block, returning updated contents from block
     # If the file has been modified in the block, then it will be added to the
     # git index and the method will return true.
@@ -255,7 +264,7 @@ module Zim # nodoc
     def braid_update(app, path)
       if File.exist?(path)
         begin
-          rbenv_exec("braid update #{path}")
+          bundle_exec("braid update #{path}")
         rescue
           mysystem("git remote rm master/braid/#{path} >/dev/null 2>/dev/null") rescue
             rbenv_exec("braid update #{path}")
@@ -273,7 +282,7 @@ module Zim # nodoc
     def braid_diff(app, path)
       if File.exist?(path)
         puts "Braid Diff #{path} in #{app}"
-        rbenv_exec("braid diff #{path}")
+        bundle_exec("braid diff #{path}")
       end
     end
 
@@ -743,7 +752,7 @@ module Zim # nodoc
       command(:normalize_gitattributes) do |app|
         if File.exist?('vendor/tools/buildr_plus')
           git_clean_filesystem
-          rbenv_exec('bundle exec buildr gitattributes:fix')
+          bundle_exec('buildr gitattributes:fix')
           git_reset_index
           git_add_all_files
           git_commit('Normalize .gitattributes', false)
@@ -754,7 +763,7 @@ module Zim # nodoc
       command(:normalize_gitignore) do |app|
         if File.exist?('vendor/tools/buildr_plus')
           git_clean_filesystem
-          rbenv_exec('bundle exec buildr gitignore:fix')
+          bundle_exec('buildr gitignore:fix')
           git_reset_index
           git_add_all_files
           git_commit('Normalize .gitignore', false)
@@ -765,7 +774,7 @@ module Zim # nodoc
       command(:normalize_whitespace) do |app|
         if File.exist?('vendor/tools/buildr_plus')
           git_clean_filesystem
-          rbenv_exec('bundle exec buildr whitespace:fix')
+          bundle_exec('buildr whitespace:fix')
           git_reset_index
           git_add_all_files
           git_commit('Normalize whitespace', false)
@@ -776,7 +785,7 @@ module Zim # nodoc
       command(:normalize_travisci) do |app|
         if File.exist?('vendor/tools/buildr_plus') && File.exist?('.travis.yml')
           git_clean_filesystem
-          rbenv_exec('bundle exec buildr travis:fix')
+          bundle_exec('buildr travis:fix')
           git_reset_index
           git_add_all_files
           git_commit('Normalize travis configuration', false)
@@ -787,7 +796,7 @@ module Zim # nodoc
       command(:normalize_jenkins) do |app|
         if File.exist?('vendor/tools/buildr_plus') && File.exist?('Jenkinsfile')
           git_clean_filesystem
-          rbenv_exec('bundle exec buildr jenkins:fix')
+          bundle_exec('buildr jenkins:fix')
           git_reset_index
           git_add_all_files
           git_commit('Normalize jenkins configuration', false)
@@ -798,7 +807,7 @@ module Zim # nodoc
       command(:normalize_gemfile) do |app|
         if File.exist?('vendor/tools/buildr_plus')
           git_clean_filesystem
-          rbenv_exec('bundle exec buildr gems:fix')
+          bundle_exec('buildr gems:fix')
           git_reset_index
           git_add_all_files
           git_commit('Normalize Gemfile', false)
