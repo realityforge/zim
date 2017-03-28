@@ -286,6 +286,26 @@ module Zim # nodoc
       end
     end
 
+    # Execute braid diff if braid is present.
+    # e.g.
+    #
+    #    braid_diff_all()
+    #
+    def braid_diff_all
+      bundle_exec('braid setup 2>&1 > /dev/null', false)
+      bundle_exec('braid diff') if 0 == $?.exitstatus
+    end
+
+    # Execute braid update if braid is present.
+    # e.g.
+    #
+    #    braid_update_all()
+    #
+    def braid_update_all
+      bundle_exec('braid setup 2>&1 > /dev/null', false)
+      bundle_exec('braid update') if 0 == $?.exitstatus
+    end
+
     # Add a command that updates the version of a dependency family
     # in projects (assuming all dependencies are in build.yaml). This
     # method assumes the standard set of artifacts that are usually shared
@@ -441,6 +461,16 @@ module Zim # nodoc
 
       desc 'Perform diffs against all braids'
       command(:braid_diff_all) do |app|
+        braid_diff_all
+      end
+
+      desc 'Perform updates for all braids'
+      command(:braid_update_all) do
+        braid_update_all
+      end
+
+      desc 'Perform diffs against all braids in braid list'
+      command(:braid_diff_all_configured) do |app|
         puts "Braid diffing #{app}\n=================\n"
         braids.keys.each do |key|
           run(:"braid_diff_#{key}", app)
@@ -448,8 +478,8 @@ module Zim # nodoc
         puts "=================\n\n\n\n"
       end
 
-      desc 'Perform updates for all braids'
-      command(:braid_update_all) do |app|
+      desc 'Perform updates for all braids in braid list'
+      command(:braid_update_all_configured) do |app|
         braids.keys.each do |key|
           run(:"braid_update_#{key}", app)
         end
