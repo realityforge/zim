@@ -43,9 +43,9 @@ module Zim # nodoc
     #
     #    rbenv_exec('bundle install')
     #
-    def rbenv_exec(command)
+    def rbenv_exec(command, fail_on_error = true)
       envs = %w(GEM_PATH GEM_HOME BUNDLE_ORIG_PATH BUNDLE_BIN_PATH BUNDLE_GEMFILE RBENV_DIR RUBYLIB RBENV_VERSION RBENV_ROOT RBENV_HOOK_PATH RUBYOPT RBENV_SHELL)
-      mysystem("#{envs.collect { |e| "unset #{e}" }.join('; ')}; rbenv exec #{command}")
+      mysystem("#{envs.collect { |e| "unset #{e}" }.join('; ')}; rbenv exec #{command}", fail_on_error)
     end
 
     # Execute a ruby command within the context of bundle environment.
@@ -53,8 +53,8 @@ module Zim # nodoc
     #
     #    bundle_exec('buildr compile')
     #
-    def bundle_exec(command)
-      rbenv_exec("bundle exec #{command}")
+    def bundle_exec(command, fail_on_error = true)
+      rbenv_exec("bundle exec #{command}", fail_on_error)
     end
 
     # Patch a particular file in block, returning updated contents from block

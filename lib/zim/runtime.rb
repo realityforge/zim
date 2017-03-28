@@ -16,9 +16,9 @@ module Zim
   class << self
 
     # Run system command and raise an exception if it returns a non-zero exit status
-    def mysystem(command)
+    def mysystem(command, fail_on_error = true)
       puts "system (#{Dir.pwd}): #{command}" if @verbose
-      system(command) || (raise "Error executing #{command} in #{Dir.pwd}")
+      system(command) || !fail_on_error || (raise "Error executing #{command} in #{Dir.pwd}")
     end
 
     # Evaluate block after changing directory to specified directory
