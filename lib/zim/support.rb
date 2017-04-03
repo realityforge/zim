@@ -548,6 +548,16 @@ module Zim # nodoc
       mysystem("git merge #{branch}")
     end
 
+    # Run prune in repository. Needed if there is too much garbage generated
+    def git_prune
+      mysystem('git prune')
+    end
+
+    # Garbage collect repository
+    def git_gc
+      mysystem('git gc')
+    end
+
     # Reset branch to origin if there is no changes
     def git_reset_if_unchanged(branch = "origin/#{git_current_branch}")
       if git_has_remote_branch?(branch) && Zim.cwd_has_unpushed_changes? && `git diff #{branch} 2>&1`.split("\n").size == 0
@@ -710,6 +720,14 @@ module Zim # nodoc
         git_pull
       end
 
+      command(:git_prune) do
+        git_prune
+      end
+
+      command(:git_gc) do
+        git_gc
+      end
+
       command(:push) do |app|
         run(:git_reset_if_unchanged, app)
         git_push if Zim.cwd_has_unpushed_changes?
@@ -737,6 +755,12 @@ module Zim # nodoc
       command(:real_clean, :in_app_dir => false) do |app|
         run(:clean, app)
         run(:reset_origin, app)
+      end
+
+      command(:ultra_clean, :in_app_dir => false) do |app|
+        run(:real_clean, app)
+        run(:git_prune, app)
+        run(:git_gc, app)
       end
     end
 
