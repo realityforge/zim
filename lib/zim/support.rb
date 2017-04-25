@@ -612,6 +612,8 @@ module Zim # nodoc
 
         files.each do |f|
           next if /^vendor\/.*/ =~ f
+          next if /^node_modules\/.*/ =~ f
+
           content = File.read(f)
           original_content = content.dup
           begin
