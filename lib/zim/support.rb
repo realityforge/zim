@@ -863,6 +863,7 @@ module Zim # nodoc
       command(:normalize_gemfile) do |app|
         if File.exist?('vendor/tools/buildr_plus')
           git_clean_filesystem
+          mysystem('rm Gemfile.lock')
           bundle_exec('buildr gems:fix')
           git_reset_index
           git_add_all_files
@@ -872,12 +873,12 @@ module Zim # nodoc
 
       desc 'Normalize files using buildr_plus rules'
       command(:normalize_all) do |app|
+        run(:normalize_gemfile, app)
         run(:normalize_gitattributes, app)
         run(:normalize_gitignore, app)
         run(:normalize_whitespace, app)
         run(:normalize_travisci, app)
         run(:normalize_jenkins, app)
-        run(:normalize_gemfile, app)
       end
     end
 
