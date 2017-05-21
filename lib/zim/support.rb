@@ -208,12 +208,17 @@ module Zim # nodoc
     # e.g.
     #
     #    patch_gem('buildr', '1.4.20', '1.4.22')
+    #    patch_gem('buildr', ['1.4.20', '1.4.21'], '1.4.22')
     #
     def patch_gem(gem, from_version, to_version)
-      desc "Update the version of the #{gem} gem from #{from_version} to #{to_version}"
+      from_version = from_version.is_a?(Array) ? from_version : [from_version]
+      desc "Update the version of the #{gem} gem from #{from_version.inspect} to #{to_version}"
       command(:"patch_#{gem}_gem") do |app|
-        patch_gemfile("Update the version of the #{gem} gem from #{from_version} to #{to_version}.") do |content|
-          content.gsub("gem '#{gem}', '= #{from_version}'", "gem '#{gem}', '= #{to_version}'")
+        patch_gemfile("Update the version of the #{gem} gem to #{to_version}.") do |content|
+          from_version.each do |v|
+            content = content.gsub("gem '#{gem}', '= #{v}'", "gem '#{gem}', '= #{to_version}'")
+          end
+          content
         end
       end
     end
