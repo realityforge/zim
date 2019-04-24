@@ -2,4 +2,4 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'zapwhite', '= 2.13.0'
+gem 'zapwhite', '= 2.14.0'
