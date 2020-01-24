@@ -966,7 +966,6 @@ module Zim # nodoc
           git_reset_index
           git_add_all_files
           mysystem('git add --all --force .github 2> /dev/null > /dev/null')
-          mysystem('git status')
           git_commit('Normalize github configuration', false)
         end
       end
