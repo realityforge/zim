@@ -110,7 +110,8 @@ module Zim # nodoc
         pattern = Regexp.compile(Regexp.escape("Update the `#{name}` artifact#{dependencies.size == 1 ? '' : 's'} to version `") + '.*' + Regexp.escape('`.'))
         message = "Update the `#{name}` artifact#{dependencies.size == 1 ? '' : 's'} to version `#{target_version}`."
         patch_changelog(message, pattern)
-        mysystem("git commit -m \"#{message}\"")
+        commit_message = "Update the #{name} artifact#{dependencies.size == 1 ? '' : 's'} to version #{target_version}."
+        mysystem("git commit -m \"#{commit_message}\"")
         puts "#{app}: #{message}"
       end
 
