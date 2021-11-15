@@ -760,6 +760,14 @@ module Zim # nodoc
     # Add standard set of commands for interacting with git
     # repositories that applicable to all users of zim
     def add_standard_git_tasks
+      command(:remove_cache, :in_app_dir => false) do |app|
+        directory = dir_for_app(app)
+        if File.exists?(directory)
+          puts "Removing cached app #{app} at #{directory}"
+          FileUtils.rm_rf directory
+        end
+      end
+
       command(:clone, :in_app_dir => false) do |app|
         url = Zim.current_suite.application_by_name(app).git_url
 
