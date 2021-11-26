@@ -738,16 +738,18 @@ module Zim # nodoc
     end
 
     # Helper method that updates a dependency in an automerge branch
-    def propose_dependency_update(app, branch_key, dependencies, target_version)
-      branch_name = '' == branch_key ? "AM_update_#{get_shortest_group_name(dependencies)}" : "AM_#{branch_key}"
+    def propose_dependency_update(app, branch_key, dependencies, target_version, base_branch)
+      am_suffix = 'master' == base_branch ? '' : "-#{base_branch}"
+      branch_name = '' == branch_key ? "AM#{am_suffix}_update_#{get_shortest_group_name(dependencies)}" : "AM#{am_suffix}_#{branch_key}"
       merge_origin = git_local_branch_list.include?(branch_name)
+      git_checkout(base_branch)
       git_checkout(branch_name, true)
-      git_merge('origin/master') if merge_origin
+      git_merge("origin/#{base_branch}") if merge_origin
 
       if patch_versions(app, dependencies, target_version)
         git_push
       else
-        git_checkout('master')
+        git_checkout(base_branch)
         mysystem("git branch -D #{branch_name} 2> /dev/null 1> /dev/null")
       end
     end
@@ -927,7 +929,11 @@ module Zim # nodoc
 
         run(:real_clean, app)
         in_app_dir(app) do
-          propose_dependency_update(app, branch_key, dependencies, target_version)
+          branches = (Zim.current_suite.application_by_name(app).tag_value('zim:branches') || 'master').split(',')
+          branches.each do |branch|
+            git_checkout(branch)
+            propose_dependency_update(app, branch_key, dependencies, target_version, branch)
+          end
         end
       end
     end
